@@ -31,7 +31,7 @@ classdef Edf2Mat < handle
     %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header          
     %           Edf2Mat.about(), Edf2Mat.version()
     %
-    % <a href="matlab:DefaultClass.about()">Copyright & Info</a>
+    % <a href="matlab:Edf2Mat.about()">Copyright & Info</a>
     
     % CONSTANT AND HIDDEN VARIABLES
     properties (Constant, Hidden)
@@ -113,7 +113,7 @@ classdef Edf2Mat < handle
             
             obj.filename = filename;
             
-            if exist('silent', 'var')
+            if exist('verbose', 'var')
                 try
                     obj.verbose = logical(verbose);
                 catch e
@@ -129,7 +129,6 @@ classdef Edf2Mat < handle
             obj.convertSamples();
             obj.createHeader();
             obj.convertEvents();
-            obj.save();
             if obj.verbose
                 disp(['Edf succesfully converted, processed and values are saved in ' obj.matFilename '!']);
             end
@@ -178,8 +177,8 @@ classdef Edf2Mat < handle
                 disp('Trying to convert!')
                 disp(['Processing ' kind '. Please wait ...']);
             end
-            
-            command = ['"' pwd '\@Edf2Mat\private\edf2asc.exe" -miss nan -y '];
+            [path, ~, ~] = fileparts(which(mfilename));
+            command = ['"' path '\private\edf2asc.exe" -miss nan -y '];
             switch kind
                 case obj.cases.samples
                     command = [command '-s '];                   
@@ -261,21 +260,19 @@ classdef Edf2Mat < handle
             % Outputs:
             %	version
             %
-            % Example: DefaultClass.version();
+            % Example: Edf2Mat.version();
             %
-            % See also: Add here useful other commands which go aline
-            %           with this function
-            %           DefaultClass(), DefaultClass.afunction(),
-            %           DefaultClass.about(),
-            %           DefaultClass.staticFunction()
+            % See also: Edf2Mat.plot(), Edf2Mat.save()
+            %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
+            %           Edf2Mat.about(), Edf2Mat.version()
             
             ver = eval([class(eval(mfilename)) '.VERSION']);
             
         end
         function about()
-            % DefaultClass.about prints everything about the class
+            % Edf2Mat.about prints everything about the class
             %
-            % Syntax: DefaultClass.about()
+            % Syntax: Edf2Mat.about()
             %
             % Inputs:
             %   No Inputs
@@ -283,13 +280,11 @@ classdef Edf2Mat < handle
             % Outputs:
             %	No Outputs
             %
-            % Example: DefaultClass.about();
+            % Example: Edf2Mat.about();
             %
-            % See also: Add here useful other commands which go aline
-            %           with this function
-            %           DefaultClass(), DefaultClass.afunction(),
-            %           DefaultClass.version(), 
-            %           DefaultClass.staticFunction()
+            % See also: Edf2Mat.plot(), Edf2Mat.save()
+            %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
+            %           Edf2Mat.about(), Edf2Mat.version()
             
             className = mfilename;
             fprintf('\n\n\t About the <a href="matlab:help %s">%s</a>:\n\n', className, className);
