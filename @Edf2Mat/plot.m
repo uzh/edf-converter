@@ -12,6 +12,44 @@ function plot(obj)
 %
 %   <a href = "matlab:Edf2Mat.about">About and Copyright</a>
 
+% AVAILABLE Types: see edf_data.h
+% just a few examples:
+% #define STARTPARSE 1 	/* these only have time and eye data */
+% #define ENDPARSE   2
+% #define BREAKPARSE 10
+% 
+% 			/* EYE DATA: contents determined by evt_data */
+% #define STARTBLINK 3    /* and by "read" data item */
+% #define ENDBLINK   4    /* all use IEVENT format */
+% #define STARTSACC  5
+% #define ENDSACC    6
+% #define STARTFIX   7
+% #define ENDFIX     8
+% #define FIXUPDATE  9
+% 
+%   /* buffer = (none, directly affects state), btype = CONTROL_BUFFER */
+% 
+% 			 /* control events: all put data into */
+% 			 /* the EDF_FILE or ILINKDATA status  */
+% #define STARTSAMPLES 15  /* start of events in block */
+% #define ENDSAMPLES   16  /* end of samples in block */
+% #define STARTEVENTS  17  /* start of events in block */
+% #define ENDEVENTS    18  /* end of events in block */
+% 
+% 
+% 
+% 	/* buffer = IMESSAGE, btype = IMESSAGE_BUFFER */
+% 
+% #define MESSAGEEVENT 24  /* user-definable text or data */
+% 
+% 
+% 	/* buffer = IOEVENT, btype = IOEVENT_BUFFER */
+% 
+% #define BUTTONEVENT  25  /* button state change */
+% #define INPUTEVENT   28  /* change of input port */
+
+    assert(isa(obj, 'Edf2Mat'), 'Edf2Mat:plot', 'Only objects of type Edf2Mat can be plotted!');
+
     screenSize = get(0,'ScreenSize');
     figure( 'Position', [screenSize(3)/4 screenSize(4)/4 2*screenSize(3)/3 2*screenSize(4)/3], ...
             'Name', ['Plotting ' obj.filename], ...
@@ -19,11 +57,32 @@ function plot(obj)
              'Menubar','none');
 
 
-    % Ploting the Eye Movement
-    posX = obj.Samples.posX;
-    % Y must be inverted, because eyetracker origin 
-    % is upper left corner in a graph its the lower left
-    posY = obj.Samples.posY * -1; 
+         if obj.oldProcedure
+             posX           = obj.Samples.posX;
+             % Y must be inverted, because eyetracker origin
+             % is upper left corner in a graph its the lower left
+             posY           = obj.Samples.posY * -1;
+             time           = obj.Samples.time;
+             messageTime    = obj.Events.Messages.time;
+             pupilsize      = obj.Samples.pupilSize;
+             blinkStart     = obj.Events.Eblink.start';
+             blinkEnd       = obj.Events.Eblink.end';
+         else
+             posX           = [obj.Samples.px].';
+             posX           = posX(:, 2);
+             % Y must be inverted, because eyetracker origin
+             % is upper left corner in a graph its the lower left
+             posY           = [obj.Samples.py].' .* -1;
+             posY           = posY(:, 2);
+             time           = double(obj.Samples.time).';
+             messageTime    = [obj.Events(~cellfun(@(x) isempty(x), {obj.Events.message}.')).sttime].';
+             pupilsize      = obj.Samples.pa;
+             BLINKSTARTTYPE = 3; % see edf_data.h to have an overview of available types
+             BLINKENDTYPE   = 4;
+             blinkStart     = [obj.Events([obj.Events.type].' == BLINKSTARTTYPE).sttime].';
+             blinkEnd       = [obj.Events([obj.Events.type].' == BLINKENDTYPE).entime].';
+         end
+    
     subplot(2,2,[1 3]);
 
     plot(posX, posY, 'o', 'Color','blue'); 
@@ -35,8 +94,7 @@ function plot(obj)
     ylabel('y-Position');
 
     % Ploting pupil size
-    time = obj.Samples.time;
-    pupilsize = obj.Samples.pupilSize;
+    
     %
     subplot(2,2,2);
     plot(time, pupilsize); 
@@ -44,19 +102,17 @@ function plot(obj)
     axis('auto');
 
     xlabel('time [ms]');
-    ylabel(lower(obj.Events.pupilInfo));
 
     % Ploting some Event Info
-    messageTime     = obj.Events.Messages.time;
-    time            = obj.Samples.time;
+    
+
     time            = [(messageTime(1):1:time(1))'; time];
     messageMarker   = zeros(size(time, 1), 1);
     messageMarker(ismember(time, messageTime)) = 10;
 
 
 
-    blinkStart      = obj.Events.Eblink.start';
-    blinkEnd        = obj.Events.Eblink.end';
+    
     blink = [];
     for i = 1:size(blinkStart, 1)
         blink = [blink; (blinkStart(i):4:blinkEnd(i))'];
