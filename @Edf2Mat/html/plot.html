@@ -1,0 +1,310 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plot</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-04-16"><meta name="DC.source" content="plot.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> plot(obj)
+<span class="comment">%PLOT plots the edf content to verify if they are useful. For all other</span>
+<span class="comment">%   post processing you should rather define your own plots</span>
+<span class="comment">%</span>
+<span class="comment">%   Syntax: obj.plot();</span>
+<span class="comment">%           or</span>
+<span class="comment">%           plot(obj);</span>
+<span class="comment">%clear</span>
+<span class="comment">%   See also: Edf2Mat.plot(), Edf2Mat.save()</span>
+<span class="comment">%             Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header</span>
+<span class="comment">%             Edf2Mat.about(), Edf2Mat.version()</span>
+<span class="comment">%</span>
+<span class="comment">%   &lt;a href = "matlab:Edf2Mat.about"&gt;About and Copyright&lt;/a&gt;</span>
+
+<span class="comment">% AVAILABLE Types: see edf_data.h</span>
+<span class="comment">% just a few examples:</span>
+<span class="comment">% #define STARTPARSE 1 	/* these only have time and eye data */</span>
+<span class="comment">% #define ENDPARSE   2</span>
+<span class="comment">% #define BREAKPARSE 10</span>
+<span class="comment">%</span>
+<span class="comment">% 			/* EYE DATA: contents determined by evt_data */</span>
+<span class="comment">% #define STARTBLINK 3    /* and by "read" data item */</span>
+<span class="comment">% #define ENDBLINK   4    /* all use IEVENT format */</span>
+<span class="comment">% #define STARTSACC  5</span>
+<span class="comment">% #define ENDSACC    6</span>
+<span class="comment">% #define STARTFIX   7</span>
+<span class="comment">% #define ENDFIX     8</span>
+<span class="comment">% #define FIXUPDATE  9</span>
+<span class="comment">%</span>
+<span class="comment">%   /* buffer = (none, directly affects state), btype = CONTROL_BUFFER */</span>
+<span class="comment">%</span>
+<span class="comment">% 			 /* control events: all put data into */</span>
+<span class="comment">% 			 /* the EDF_FILE or ILINKDATA status  */</span>
+<span class="comment">% #define STARTSAMPLES 15  /* start of events in block */</span>
+<span class="comment">% #define ENDSAMPLES   16  /* end of samples in block */</span>
+<span class="comment">% #define STARTEVENTS  17  /* start of events in block */</span>
+<span class="comment">% #define ENDEVENTS    18  /* end of events in block */</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">% 	/* buffer = IMESSAGE, btype = IMESSAGE_BUFFER */</span>
+<span class="comment">%</span>
+<span class="comment">% #define MESSAGEEVENT 24  /* user-definable text or data */</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">% 	/* buffer = IOEVENT, btype = IOEVENT_BUFFER */</span>
+<span class="comment">%</span>
+<span class="comment">% #define BUTTONEVENT  25  /* button state change */</span>
+<span class="comment">% #define INPUTEVENT   28  /* change of input port */</span>
+
+    assert(isa(obj, <span class="string">'Edf2Mat'</span>), <span class="string">'Edf2Mat:plot'</span>, <span class="string">'Only objects of type Edf2Mat can be plotted!'</span>);
+
+    screenSize = get(0,<span class="string">'ScreenSize'</span>);
+    figure( <span class="string">'Position'</span>, [screenSize(3)/4 screenSize(4)/4 2*screenSize(3)/3 2*screenSize(4)/3], <span class="keyword">...</span>
+        <span class="string">'Name'</span>, [<span class="string">'Plotting '</span> obj.filename], <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Menubar'</span>,<span class="string">'none'</span>);
+
+
+    posX           = obj.Samples.posX;
+    <span class="comment">% Y must be inverted, because eyetracker origin</span>
+    <span class="comment">% is upper left corner in a graph its the lower left</span>
+    posY           = obj.Samples.posY * -1;
+
+    <span class="keyword">if</span> obj.oldProcedure
+        time           = obj.Samples.time;
+        messageTime    = obj.Events.Messages.time;
+        pupilsize      = obj.Samples.pupilSize;
+        blinkStart     = obj.Events.Eblink.start';
+        blinkEnd       = obj.Events.Eblink.end';
+    <span class="keyword">else</span>
+        time           = double(obj.Samples.time).';
+        messageTime    = [obj.Events(~cellfun(@(x) isempty(x), {obj.Events.message}.')).sttime].';
+        pupilsize      = obj.Samples.pa(2, :);
+        BLINKSTARTTYPE = 3; <span class="comment">% see edf_data.h to have an overview of available types</span>
+        BLINKENDTYPE   = 4;
+        blinkStart     = double([obj.Events([obj.Events.type].' == BLINKSTARTTYPE).sttime].');
+        blinkEnd       = double([obj.Events([obj.Events.type].' == BLINKENDTYPE).entime].');
+    <span class="keyword">end</span>
+
+    time = unique(time - time(1));
+    time(time &lt; 0) = 0;
+
+    subplot(2,2,[1 3]);
+
+    plot(posX, posY, <span class="string">'o'</span>, <span class="string">'Color'</span>,<span class="string">'blue'</span>);
+    title(<span class="string">'Plot of the eye movement!'</span>);
+    axis([min(posX) max(posX) min(posY) max(posY)]);
+    axis(<span class="string">'square'</span>);
+
+    xlabel(<span class="string">'x-Position'</span>);
+    ylabel(<span class="string">'y-Position'</span>);
+
+    <span class="comment">% Ploting pupil size</span>
+
+    <span class="comment">%</span>
+    subplot(2,2,2);
+    plot(time, pupilsize);
+    title(<span class="string">'Pupil Size'</span>);
+    axis(<span class="string">'auto'</span>);
+
+    xlabel(<span class="string">'time [ms]'</span>);
+
+    <span class="comment">% Ploting some Event Info</span>
+    time = min(blinkStart(1), messageTime(1)): max(blinkEnd(end), messageTime(end));
+    blinkMarker = zeros(numel(time), 1);
+    <span class="keyword">for</span> i = 1:numel(blinkStart)
+        blinkMarker((blinkStart(i) + 1:blinkEnd(i)) - blinkStart(1)) = 10;
+    <span class="keyword">end</span>
+
+    messageMarker = zeros(numel(time), 1);
+    messageMarker(messageTime - messageTime(1) + 1) = 10;
+
+    subplot(2,2,4);
+    plot(time, messageMarker, time, blinkMarker);
+    legend(<span class="string">'Message Occurrence'</span>,<span class="string">'Blink'</span>);
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">The class Edf2Mat has no property or method named 'plot'.
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function plot(obj)
+%PLOT plots the edf content to verify if they are useful. For all other
+%   post processing you should rather define your own plots
+%
+%   Syntax: obj.plot();
+%           or
+%           plot(obj);
+%clear
+%   See also: Edf2Mat.plot(), Edf2Mat.save()
+%             Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
+%             Edf2Mat.about(), Edf2Mat.version()
+%
+%   <a href = "matlab:Edf2Mat.about">About and Copyright</a>
+
+% AVAILABLE Types: see edf_data.h
+% just a few examples:
+% #define STARTPARSE 1 	/* these only have time and eye data */
+% #define ENDPARSE   2
+% #define BREAKPARSE 10
+% 
+% 			/* EYE DATA: contents determined by evt_data */
+% #define STARTBLINK 3    /* and by "read" data item */
+% #define ENDBLINK   4    /* all use IEVENT format */
+% #define STARTSACC  5
+% #define ENDSACC    6
+% #define STARTFIX   7
+% #define ENDFIX     8
+% #define FIXUPDATE  9
+% 
+%   /* buffer = (none, directly affects state), btype = CONTROL_BUFFER */
+% 
+% 			 /* control events: all put data into */
+% 			 /* the EDF_FILE or ILINKDATA status  */
+% #define STARTSAMPLES 15  /* start of events in block */
+% #define ENDSAMPLES   16  /* end of samples in block */
+% #define STARTEVENTS  17  /* start of events in block */
+% #define ENDEVENTS    18  /* end of events in block */
+% 
+% 
+% 
+% 	/* buffer = IMESSAGE, btype = IMESSAGE_BUFFER */
+% 
+% #define MESSAGEEVENT 24  /* user-definable text or data */
+% 
+% 
+% 	/* buffer = IOEVENT, btype = IOEVENT_BUFFER */
+% 
+% #define BUTTONEVENT  25  /* button state change */
+% #define INPUTEVENT   28  /* change of input port */
+
+    assert(isa(obj, 'Edf2Mat'), 'Edf2Mat:plot', 'Only objects of type Edf2Mat can be plotted!');
+
+    screenSize = get(0,'ScreenSize');
+    figure( 'Position', [screenSize(3)/4 screenSize(4)/4 2*screenSize(3)/3 2*screenSize(4)/3], ...
+        'Name', ['Plotting ' obj.filename], ...
+        'NumberTitle', 'off', ...
+        'Menubar','none');
+    
+    
+    posX           = obj.Samples.posX;
+    % Y must be inverted, because eyetracker origin
+    % is upper left corner in a graph its the lower left
+    posY           = obj.Samples.posY * -1;
+    
+    if obj.oldProcedure
+        time           = obj.Samples.time;
+        messageTime    = obj.Events.Messages.time;
+        pupilsize      = obj.Samples.pupilSize;
+        blinkStart     = obj.Events.Eblink.start';
+        blinkEnd       = obj.Events.Eblink.end';
+    else
+        time           = double(obj.Samples.time).';
+        messageTime    = [obj.Events(~cellfun(@(x) isempty(x), {obj.Events.message}.')).sttime].';
+        pupilsize      = obj.Samples.pa(2, :);
+        BLINKSTARTTYPE = 3; % see edf_data.h to have an overview of available types
+        BLINKENDTYPE   = 4;
+        blinkStart     = double([obj.Events([obj.Events.type].' == BLINKSTARTTYPE).sttime].');
+        blinkEnd       = double([obj.Events([obj.Events.type].' == BLINKENDTYPE).entime].');
+    end
+    
+    time = unique(time - time(1));
+    time(time < 0) = 0;
+    
+    subplot(2,2,[1 3]);
+
+    plot(posX, posY, 'o', 'Color','blue'); 
+    title('Plot of the eye movement!');
+    axis([min(posX) max(posX) min(posY) max(posY)]);
+    axis('square');
+
+    xlabel('x-Position');
+    ylabel('y-Position');
+
+    % Ploting pupil size
+    
+    %
+    subplot(2,2,2);
+    plot(time, pupilsize); 
+    title('Pupil Size');
+    axis('auto');
+
+    xlabel('time [ms]');
+
+    % Ploting some Event Info
+    time = min(blinkStart(1), messageTime(1)): max(blinkEnd(end), messageTime(end));
+    blinkMarker = zeros(numel(time), 1);
+    for i = 1:numel(blinkStart)
+        blinkMarker((blinkStart(i) + 1:blinkEnd(i)) - blinkStart(1)) = 10;
+    end
+    
+    messageMarker = zeros(numel(time), 1);
+    messageMarker(messageTime - messageTime(1) + 1) = 10;
+
+    subplot(2,2,4);
+    plot(time, messageMarker, time, blinkMarker);
+    legend('Message Occurrence','Blink');
+
+end
+
+
+##### SOURCE END #####
+--></body></html>

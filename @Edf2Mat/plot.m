@@ -113,7 +113,7 @@ function plot(obj)
 
     subplot(2,2,4);
     plot(time, messageMarker, time, blinkMarker);
-    legend('Message Occurence','Blink');
+    legend('Message Occurrence','Blink');
 
 end
 

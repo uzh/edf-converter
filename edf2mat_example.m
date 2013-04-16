@@ -1,3 +1,6 @@
+%% Type help for help
+help Edf2Mat
+
 %% Example 1 for how to use the Edf Converter
 
 %% Converting the EDF File and saving it as a Matlab File
@@ -43,9 +46,9 @@ plot(edf1.Samples.pa(2, end - 500:end));
 %% Example 2 for how to use the Edf Converter
 
 %% Converting the EDF File and saving it as a Matlab File
-edf2 = Edf2Mat('EYE33r10.edf');
+edf2 = Edf2Mat('Pill004.edf');
 
 %% Plot the progress of the pupil size
 
 figure();
-plot(edf2.Samples.pa(2, end - 500:end));
+plot(edf2.Samples.pa(2, 1:1500));
