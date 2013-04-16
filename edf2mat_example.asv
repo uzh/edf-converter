@@ -39,8 +39,3 @@ plot(edf.Samples.posX(end - 2000:end), edf.Samples.posY(end - 2000:end), 'o');
 
 figure();
 plot(edf.Samples.pa(1:100));
-
-%% Example 2 for how to use the Edf Converter
-
-%% Converting the EDF File and saving it as a Matlab File
-edf = Edf2Mat('EYE33r10.edf');

@@ -60,7 +60,7 @@ int BuildMexArrays::PopulateArrays( int Offset, int MaxRec)
     mxAddField(OutputMexObject,"FILENAME");
     mxSetField(OutputMexObject,0,"FILENAME",mxCreateString(FileName));
     
-    
+    mexPrintf("\n");
     return 0;
     
 };
