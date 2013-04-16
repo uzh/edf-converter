@@ -1,6 +1,6 @@
 
 
-char *  build_version = "3.1 MacOS X Jul 13 2010";
+char *  build_version = "3.1 Win32 Sep 30 2010";
 
 
 class BuildMexArrays : public BuildMexArraysBaseClass
@@ -31,8 +31,8 @@ mxArray * mxRECORDINGS;
 {
 	const char * fieldnames[28];
 	UINT32* time;
-	float* px;
-	float* py;
+	single* px;
+	single* py;
 	single* hx;
 	single* hy;
 	single* pa;

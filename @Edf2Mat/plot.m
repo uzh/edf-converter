@@ -52,36 +52,34 @@ function plot(obj)
 
     screenSize = get(0,'ScreenSize');
     figure( 'Position', [screenSize(3)/4 screenSize(4)/4 2*screenSize(3)/3 2*screenSize(4)/3], ...
-            'Name', ['Plotting ' obj.filename], ...
-            'NumberTitle', 'off', ...
-             'Menubar','none');
-
-
-         if obj.oldProcedure
-             posX           = obj.Samples.posX;
-             % Y must be inverted, because eyetracker origin
-             % is upper left corner in a graph its the lower left
-             posY           = obj.Samples.posY * -1;
-             time           = obj.Samples.time;
-             messageTime    = obj.Events.Messages.time;
-             pupilsize      = obj.Samples.pupilSize;
-             blinkStart     = obj.Events.Eblink.start';
-             blinkEnd       = obj.Events.Eblink.end';
-         else
-             posX           = [obj.Samples.px].';
-             posX           = posX(:, 2);
-             % Y must be inverted, because eyetracker origin
-             % is upper left corner in a graph its the lower left
-             posY           = [obj.Samples.py].' .* -1;
-             posY           = posY(:, 2);
-             time           = double(obj.Samples.time).';
-             messageTime    = [obj.Events(~cellfun(@(x) isempty(x), {obj.Events.message}.')).sttime].';
-             pupilsize      = obj.Samples.pa;
-             BLINKSTARTTYPE = 3; % see edf_data.h to have an overview of available types
-             BLINKENDTYPE   = 4;
-             blinkStart     = [obj.Events([obj.Events.type].' == BLINKSTARTTYPE).sttime].';
-             blinkEnd       = [obj.Events([obj.Events.type].' == BLINKENDTYPE).entime].';
-         end
+        'Name', ['Plotting ' obj.filename], ...
+        'NumberTitle', 'off', ...
+        'Menubar','none');
+    
+    
+    posX           = obj.Samples.posX;
+    % Y must be inverted, because eyetracker origin
+    % is upper left corner in a graph its the lower left
+    posY           = obj.Samples.posY * -1;
+    
+    if obj.oldProcedure
+        time           = obj.Samples.time;
+        messageTime    = obj.Events.Messages.time;
+        pupilsize      = obj.Samples.pupilSize;
+        blinkStart     = obj.Events.Eblink.start';
+        blinkEnd       = obj.Events.Eblink.end';
+    else
+        time           = double(obj.Samples.time).';
+        messageTime    = [obj.Events(~cellfun(@(x) isempty(x), {obj.Events.message}.')).sttime].';
+        pupilsize      = obj.Samples.pa(2, :);
+        BLINKSTARTTYPE = 3; % see edf_data.h to have an overview of available types
+        BLINKENDTYPE   = 4;
+        blinkStart     = double([obj.Events([obj.Events.type].' == BLINKSTARTTYPE).sttime].');
+        blinkEnd       = double([obj.Events([obj.Events.type].' == BLINKENDTYPE).entime].');
+    end
+    
+    time = unique(time - time(1));
+    time(time < 0) = 0;
     
     subplot(2,2,[1 3]);
 
@@ -104,21 +102,14 @@ function plot(obj)
     xlabel('time [ms]');
 
     % Ploting some Event Info
-    
-
-    time            = [(messageTime(1):1:time(1))'; time];
-    messageMarker   = zeros(size(time, 1), 1);
-    messageMarker(ismember(time, messageTime)) = 10;
-
-
-
-    
-    blink = [];
-    for i = 1:size(blinkStart, 1)
-        blink = [blink; (blinkStart(i):4:blinkEnd(i))'];
+    time = min(blinkStart(1), messageTime(1)): max(blinkEnd(end), messageTime(end));
+    blinkMarker = zeros(numel(time), 1);
+    for i = 1:numel(blinkStart)
+        blinkMarker((blinkStart(i) + 1:blinkEnd(i)) - blinkStart(1)) = 10;
     end
-    blinkMarker     = zeros(size(time, 1), 1);
-    blinkMarker(ismember(time, blink)) = 10;
+    
+    messageMarker = zeros(numel(time), 1);
+    messageMarker(messageTime - messageTime(1) + 1) = 10;
 
     subplot(2,2,4);
     plot(time, messageMarker, time, blinkMarker);

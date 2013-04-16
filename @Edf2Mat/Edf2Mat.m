@@ -186,6 +186,10 @@ classdef Edf2Mat < handle
                 obj.Header  = obj.Edf.HEADER;
                 obj.Samples = obj.Edf.FSAMPLE;
                 obj.Events  = obj.Edf.FEVENT;
+                obj.Samples.posX = obj.Samples.gx(2,:);
+                obj.Samples.posX = obj.Samples.posX(obj.Samples.posX < 2000);
+                obj.Samples.posY = obj.Samples.gy(2,:);
+                obj.Samples.posY = obj.Samples.posY(obj.Samples.posY < 2000);
             end
         end
         
