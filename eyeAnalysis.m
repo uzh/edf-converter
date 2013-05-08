@@ -4,7 +4,7 @@ function output = eyeAnalysis(file_with_path)
 
 %set path to Adi's toolbox
 
-addpath('/Volumes/DataHD/Dropbox/work/teaching/spm/2013_Zurich_internal/session_10_08052013/eye/Edf2Mat_Toolbox');
+% addpath('/Volumes/DataHD/Dropbox/work/teaching/spm/2013_Zurich_internal/session_10_08052013/eye/Edf2Mat_Toolbox');
 
  
 
@@ -31,39 +31,39 @@ edfTimeStepRes = edfTime(2) - edfTime(1);
 
 %% determine saccade parameters
 SACCADE_START_TYPE = 5;
-% saccadeStarts = edf.Events([edf.Events.type]' == 5) 
+% saccadeStarts = edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type]' == 5) 
 
-saccStarts     = double([edf.Events([edf.Events.type].' == SACCADE_START_TYPE).sttime].');
+saccStarts     = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_START_TYPE).sttime].');
 % saccStarts = saccadeStarts.sttime;
 
 
-% Sacc.Ons  = saccStarts - edf.Events.Start.time;
+% Sacc.Ons  = saccStarts - edf.RawEdf.FEVENT.Start.time;
 START_PHASE_TYPE = 1;
-start_time = edf.Events([edf.Events.type] == START_PHASE_TYPE);
+start_time = edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type] == START_PHASE_TYPE);
 start_time = double(start_time(1).sttime); % (1) if multiple start
 Sacc.Ons  = saccStarts - start_time; 
 
 
  
 SACCADE_END_TYPE = 6;
-% saccadeStops = edf.Events([edf.Events.type]' == 5) 
+% saccadeStops = edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type]' == 5) 
 
 % saccStops = saccadeStops.sttime;
-saccStops   = double([edf.Events([edf.Events.type].' == SACCADE_END_TYPE).sttime].');
+saccStops   = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).sttime].');
 
-% Sacc.Ends = saccStops - edf.Events.Start.time;
+% Sacc.Ends = saccStops - edf.RawEdf.FEVENT.Start.time;
 Sacc.Ends = saccStops - start_time;
 
  
 
 Sacc.Dur  = Sacc.Ends - Sacc.Ons;
 
-posX = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).gstx];
-posXend  = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).genx]
-posY = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).gsty];
-posYend  = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).geny];
+posX = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).gstx];
+posXend  = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).genx]
+posY = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).gsty];
+posYend  = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).geny];
 
-% Sacc.EuclDist = sqrt([edf.Events.Esacc.posX(:) - edf.Events.Esacc.posXend(:)].^2 + [edf.Events.Esacc.posY(:) - edf.Events.Esacc.posYend(:)].^2);
+% Sacc.EuclDist = sqrt([edf.RawEdf.FEVENT.Esacc.posX(:) - edf.RawEdf.FEVENT.Esacc.posXend(:)].^2 + [edf.RawEdf.FEVENT.Esacc.posY(:) - edf.RawEdf.FEVENT.Esacc.posYend(:)].^2);
 
 Sacc.EuclDist = sqrt([posX(:) - posXend(:)].^2 + [posY(:) - posYend(:)].^2)
 
@@ -90,8 +90,8 @@ output.Sacc.Speed = Sacc.Speed; % this one could also be parametric modulator
 %% determine blink parameters
 BLINKSTARTTYPE = 3; % see edf_data.h to have an overview of available types
         BLINKENDTYPE   = 4;
-blinkStart     = double([edf.Events([edf.Events.type].' == BLINKSTARTTYPE).sttime].');
-blinkEnd       = double([edf.Events([edf.Events.type].' == BLINKENDTYPE).entime].');
+blinkStart     = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == BLINKSTARTTYPE).sttime].');
+blinkEnd       = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == BLINKENDTYPE).entime].');
 
 Blink.Ons  = blinkStart - start_time;
 
@@ -100,9 +100,9 @@ Blink.Ends = blinkEnd - start_time;
 Blink.Dur  = Blink.Ends - Blink.Ons; 
 
 % 
-% Blink.Ons  = edf.Events.Eblink.start - edf.Events.Start.time;
+% Blink.Ons  = edf.RawEdf.FEVENT.Eblink.start - edf.RawEdf.FEVENT.Start.time;
 % 
-% Blink.Ends = edf.Events.Eblink.end - edf.Events.Start.time;
+% Blink.Ends = edf.RawEdf.FEVENT.Eblink.end - edf.RawEdf.FEVENT.Start.time;
 % 
 % Blink.Dur  = BlinkEnds - BlinkOns; 
 

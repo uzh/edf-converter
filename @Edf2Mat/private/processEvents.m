@@ -259,25 +259,25 @@ function processEvents(obj)
     else % create old header elements for backward compatibility
         eyeNames                = fieldnames(obj.EYES);
         
-        Messages                = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.MESSAGEEVENT);
+        Messages                = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.MESSAGEEVENT);
         Msg.time                = double([Messages.sttime]);
         Msg.info                = {Messages.message};
 
 %       Start of recording
-        startRecordings         = obj.Edf.RECORDINGS([obj.Edf.RECORDINGS.state].' == obj.RECORDING_STATES.START);
+        startRecordings         = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.START);
         Start.time              = double([startRecordings.time]);
         eyes                    = [startRecordings.eye]; % here not plus one as SR_RESEARCH can't follow it's own convention and start in recording with 1 whereas in events with 0!!!!
         
         Start.eye               =  eyeNames(eyes).';
         Start.info              =  eyeNames(eyes).';
         
-        buttons                 = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.BUTTONEVENT);
+        buttons                 = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.BUTTONEVENT);
         Button.time             = double([buttons.sttime]);
         Button.value1           = 0; % no idea where it should come from
         Button.value2           = 0; % no idea where it should come from
         Button.value3           = double([buttons.input]);
         
-        inputs                  = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.INPUTEVENT);
+        inputs                  = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.INPUTEVENT);
         Input.time              = double([inputs.sttime]);
         Input.value             = double([inputs.input]);
         
@@ -291,11 +291,11 @@ function processEvents(obj)
         pupilTypeNames          = fieldnames(obj.PUPIL);
         pupilInfo               = pupilTypeNames(double(startRecordings.pupil_type + 1));
 % 
-        startfix                = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.STARTFIX);
+        startfix                = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.STARTFIX);
         Sfix.eye                = eyeNames(double([startfix.eye]) + 1).'; % + 1 because in c indexing start with 0 whereas in matlab with 1
         Sfix.time               = double([startfix.sttime]);
 % 
-        endfix                  = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.ENDFIX);
+        endfix                  = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.ENDFIX);
         Efix.eye                = eyeNames(double([endfix.eye]) + 1).'; % + 1 because in c indexing start with 0 whereas in matlab with 1
         Efix.start              = double([endfix.sttime]);
         Efix.end                = double([endfix.entime]);
@@ -305,11 +305,11 @@ function processEvents(obj)
         Efix.pupilSize          = double([endfix.ava]);
 
 % 
-        startSaccade            = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.STARTSACC);
+        startSaccade            = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.STARTSACC);
         Ssacc.eye               = eyeNames(double([startSaccade.eye]) + 1).'; % + 1 because in c indexing start with 0 whereas in matlab with 1
         Ssacc.time              = double([startSaccade.sttime]);
 % 
-        endSaccade              = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.ENDSACC);
+        endSaccade              = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.ENDSACC);
         Esacc.eye               = eyeNames(double([endSaccade.eye]) + 1).'; % + 1 because in c indexing start with 0 whereas in matlab with 1
         Esacc.start             = double([endSaccade.sttime]); % == double([startSaccade.sttime])!!!!!!
         Esacc.end               = double([endSaccade.entime]); % != double([startSaccade.entime]) => 0 !!!
@@ -331,19 +331,19 @@ function processEvents(obj)
         
 
 % 
-        startBlink              = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.STARTBLINK);
+        startBlink              = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.STARTBLINK);
         Sblink.eye              = eyeNames(double([startBlink.eye]) + 1).'; % + 1 because in c indexing start with 0 whereas in matlab with 1
         Sblink.time             = double([startBlink.sttime]);
 
 % 
-        endBlink                = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.ENDBLINK);
+        endBlink                = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.ENDBLINK);
         Eblink.eye              = eyeNames(double([endBlink.eye]) + 1).'; % + 1 because in c indexing start with 0 whereas in matlab with 1
         Eblink.start            = double([endBlink.sttime]); % == double([startSaccade.sttime])!!!!!!
         Eblink.end              = double([endBlink.entime]); % != double([startSaccade.entime]) => 0 !!!
         Eblink.duration         = Eblink.end - Eblink.start;
 % 
 
-        endRecordings           = obj.Edf.RECORDINGS([obj.Edf.RECORDINGS.state].' == obj.RECORDING_STATES.END);
+        endRecordings           = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.END);
         End.time                = [endRecordings.time];
         End.info                = {'EVENTS'};
         End.info2               = {'RES'};

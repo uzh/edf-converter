@@ -6,7 +6,7 @@ function output = eyeAnalysis2(fileWithPath)
 
 %% set path to Adi's toolbox
 
-addpath('/Volumes/DataHD/Dropbox/work/teaching/spm/2013_Zurich_internal/session_10_08052013/eye/Edf2Mat_Toolbox');
+% addpath('/Volumes/DataHD/Dropbox/work/teaching/spm/2013_Zurich_internal/session_10_08052013/eye/Edf2Mat_Toolbox');
 
 
 
@@ -40,7 +40,7 @@ START_PHASE_TYPE = 1;
 
 
 
-startTime = edf.Events([edf.Events.type] == START_PHASE_TYPE);
+startTime = edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type] == START_PHASE_TYPE);
 
 
 
@@ -58,7 +58,7 @@ SACCADE_START_TYPE = 5;
 
 
 
-saccStarts = double([edf.Events([edf.Events.type].' == SACCADE_START_TYPE).sttime].');
+saccStarts = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_START_TYPE).sttime].');
 
 
 
@@ -70,7 +70,7 @@ SACCADE_END_TYPE = 6;
 
 
 
-saccStops   = double([edf.Events([edf.Events.type].' == SACCADE_END_TYPE).entime].');
+saccStops   = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).entime].');
 
 
 
@@ -82,19 +82,19 @@ Sacc.Dur  = Sacc.Ends - Sacc.Ons;
 
 
 
-posX = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).gstx];
+posX = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).gstx];
 
 
 
-posXend  = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).genx];
+posXend  = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).genx];
 
 
 
-posY = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).gsty];
+posY = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).gsty];
 
 
 
-posYend  = [edf.Events([edf.Events.type].' == SACCADE_END_TYPE).geny];
+posYend  = [edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == SACCADE_END_TYPE).geny];
 
 
 
@@ -138,11 +138,11 @@ BLINKENDTYPE   = 4;
 
 
 
-blinkStart     = double([edf.Events([edf.Events.type].' == BLINKSTARTTYPE).sttime].');
+blinkStart     = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == BLINKSTARTTYPE).sttime].');
 
 
 
-blinkEnd       = double([edf.Events([edf.Events.type].' == BLINKENDTYPE).entime].');
+blinkEnd       = double([edf.RawEdf.FEVENT([edf.RawEdf.FEVENT.type].' == BLINKENDTYPE).entime].');
 
 
 
@@ -200,11 +200,11 @@ output.Blink.Dur = Blink.Dur; % this could be a parametric modulator
 
 % first we need to interpolate across blinks
 
-Pupil.sizeFiltered = edf.Samples.pa(1,:).';
+Pupil.sizeFiltered = edf.Samples.pa(:,2);
 
 
 
-for iBlinks = 1:Blink.Ons
+for iBlinks = 1:numel(Blink.Ons)
     
     samplesBeforeBlink = min([3 Blink.Ons(iBlinks)/edfTimeStepRes]);
     
