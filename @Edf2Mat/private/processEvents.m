@@ -32,6 +32,7 @@ function processEvents(obj)
         Sblink      = struct('eye', [], 'time', []);
         Eblink      = struct('eye', [], 'start', [], 'end', [], 'duration', []);
         Input       = struct('time', [], 'value', []);
+        Button      = struct('time', [], 'value1', [], 'value2', [], 'value3', []);
 
         %% Allocate Memory for our structures:
         Msg         = repmat(Msg, sum(cell2mat(strfind(lines, 'MSG')) == 1), 1); % == 1 because we want only to find lines, where the line start with the specified tag
@@ -44,12 +45,14 @@ function processEvents(obj)
         Eblink      = repmat(Eblink, sum(cell2mat(strfind(lines, 'EBLINK')) == 1), 1); % == 1 because we want only to find lines, where the line start with the specified tag
         End         = repmat(End, sum(cell2mat(strfind(lines, 'END')) == 1), 1); % == 1 because we want only to find lines, where the line start with the specified tag
         Input       = repmat(Input, sum(cell2mat(strfind(lines, 'INPUT')) == 1), 1); % == 1 because we want only to find lines, where the line start with the specified tag
+        Button      = repmat(Button, sum(cell2mat(strfind(lines, 'BUTTON')) == 1), 1); % == 1 because we want only to find lines, where the line start with the specified tag
 
         %% Process all possible Events
         nMsg        = 1;
         nStart      = 1;
         nEnd        = 1;
         nInput      = 1;
+        nButton     = 1;
         nPrescaler  = 1;
         nVprescaler = 1;
         nPupil      = 1;
@@ -79,6 +82,13 @@ function processEvents(obj)
                     prescaler(nPrescaler)       = str2double(lines{ row + 1});
                     nPrescaler                  = nPrescaler + 1;
                     row                         = row + 2;
+                case 'BUTTON'
+                    Button(nButton).time        = str2double(lines{ row + 1});
+                    Button(nButton).value1      = str2double(lines{ row + 2});
+                    Button(nButton).value2      = str2double(lines{ row + 3});
+                    Button(nButton).value3      = str2double(lines{ row + 4});
+                    nButton                     = nButton + 1;
+                    row                         = row + 5;
                 case 'INPUT'
                     Input(nInput).time          = str2double(lines{ row + 1});
                     Input(nInput).value         = str2double(lines{ row + 2});
@@ -185,6 +195,16 @@ function processEvents(obj)
         Start(1).eye            = {Start.eye};
         Start(1).info           = {Start.info};
         Start                   = Start(1);
+        
+        Input(1).time           = [Input.time];
+        Input(1).value          = [Input.value];
+        Input                   = Input(1);
+        
+        Button(1).time          = [Button.time];
+        Button(1).value1        = [Button.value1];
+        Button(1).value2        = [Button.value2];
+        Button(1).value3        = [Button.value3];
+        Button                  = Button(1);
 
         Sfix(1).eye             = {Sfix.eye};
         Sfix(1).time            = [Sfix.time];
@@ -250,6 +270,16 @@ function processEvents(obj)
         
         Start.eye               =  eyeNames(eyes).';
         Start.info              =  eyeNames(eyes).';
+        
+        buttons                 = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.BUTTONEVENT);
+        Button.time             = double([buttons.sttime]);
+        Button.value1           = 0; % no idea where it should come from
+        Button.value2           = 0; % no idea where it should come from
+        Button.value3           = double([buttons.input]);
+        
+        inputs                  = obj.Edf.FEVENT([obj.Edf.FEVENT.type].' == obj.EVENT_TYPES.INPUTEVENT);
+        Input.time              = double([inputs.sttime]);
+        Input.value             = double([inputs.input]);
         
         % prescaler
         prescaler               = 1; % Undocummented but from C-Code its always 1! print("PRESCALER\t1\n");
@@ -328,6 +358,8 @@ function processEvents(obj)
     %% Create the Event Structure
     obj.Events.Messages         = Msg;
     obj.Events.Start            = Start;
+    obj.Events.Input            = Input;
+    obj.Events.Buttons          = Button;
     obj.Events.prescaler        = prescaler;
     obj.Events.vprescaler       = vprescaler;
     obj.Events.pupilInfo        = pupilInfo;

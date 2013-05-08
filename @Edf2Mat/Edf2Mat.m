@@ -18,8 +18,7 @@ classdef Edf2Mat < handle
     %                       true, default is false
     %   verbose:            logical, can be true or false, default is true.
     %                       If you want to supress output to console, 
-    %                       verbose has to be false
-    
+    %                       verbose has to be false    
     %
     % Outputs:
     %	The Edf2Mat Object
@@ -103,9 +102,11 @@ classdef Edf2Mat < handle
         AUTHOR = 'Adrian Etter'; % Author of the Class
         AUTHOREMAIL = 'adrian.etter@econ.uzh.ch'; % Email of the Author
         COPYRIGHT = {'© SNS-Lab'; 'University of Zurich'}; % Copyright Info
-        VERSION = 1.5;  % Number of the latest Version
+        VERSION = 1.6;  % Number of the latest Version
         VERSIONDATE = '2013/April/11' % Date of the latest Version
-        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Changed to mex instead of using edf.asc.exe'; ...
+        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Complete backward compatibility added'; ...
+            '2013/May/07', 'Bug fixes and renaming of variable. Old names persist! All event types defined'; ...
+            '2013/April/11', 'Changed to mex instead of using edf.asc.exe'; ...
             '2012/Aug/10', 'Finished'; ...
             '2012/Aug/9', 'created'};
         
@@ -148,7 +149,7 @@ classdef Edf2Mat < handle
         RECORDING_STATES    = struct('START', 1, 'END', 0);
         EYES                = struct('LEFT', 1, 'RIGHT', 2, 'BINOCULAR', 3);
         PUPIL               = struct('AREA', 0, 'DIAMETER', 1); 
-        MISSING_VALUE       = -32768;
+        MISSING_DATA_VALUE  = -32768;
         EMPTY_VALUE         = 1e08;
         
     end  
@@ -187,6 +188,8 @@ classdef Edf2Mat < handle
         % The Events of the Eyetrackerdata
         Events = struct('Messages', [], ...
                         'Start', [], ...
+                        'Input', [], ...
+                        'Buttons', [], ...
                         'prescaler', [], ...
                         'vprescaler', [], ...
                         'pupilInfo', [], ...
