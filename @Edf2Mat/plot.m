@@ -62,21 +62,11 @@ function plot(obj)
     % is upper left corner in a graph its the lower left
     posY           = obj.Samples.posY * -1;
     
-    if obj.oldProcedure
-        time           = obj.Samples.time;
-        messageTime    = obj.Events.Messages.time;
-        pupilsize      = obj.Samples.pupilSize;
-        blinkStart     = obj.Events.Eblink.start';
-        blinkEnd       = obj.Events.Eblink.end';
-    else
-        time           = double(obj.Samples.time).';
-        messageTime    = [obj.Events(~cellfun(@(x) isempty(x), {obj.Events.message}.')).sttime].';
-        pupilsize      = obj.Samples.pa(2, :);
-        BLINKSTARTTYPE = 3; % see edf_data.h to have an overview of available types
-        BLINKENDTYPE   = 4;
-        blinkStart     = double([obj.Events([obj.Events.type].' == BLINKSTARTTYPE).sttime].');
-        blinkEnd       = double([obj.Events([obj.Events.type].' == BLINKENDTYPE).entime].');
-    end
+    time           = obj.Samples.time;
+    messageTime    = obj.Events.Messages.time;
+    pupilsize      = obj.Samples.pupilSize;
+    blinkStart     = obj.Events.Eblink.start';
+    blinkEnd       = obj.Events.Eblink.end';
     
     time = unique(time - time(1));
     time(time < 0) = 0;
@@ -102,18 +92,25 @@ function plot(obj)
     xlabel('time [ms]');
 
     % Ploting some Event Info
-    time = min(blinkStart(1), messageTime(1)): max(blinkEnd(end), messageTime(end));
-    blinkMarker = zeros(numel(time), 1);
-    for i = 1:numel(blinkStart)
-        blinkMarker((blinkStart(i) + 1:blinkEnd(i)) - blinkStart(1)) = 10;
+    if ~isempty(blinkStart)
+        time = min(blinkStart(1), messageTime(1)): max(blinkEnd(end), messageTime(end));
+        blinkMarker = zeros(numel(time), 1);
+        for i = 1:numel(blinkStart)
+            blinkMarker((blinkStart(i) + 1:blinkEnd(i)) - blinkStart(1)) = 10;
+        end
     end
     
     messageMarker = zeros(numel(time), 1);
     messageMarker(messageTime - messageTime(1) + 1) = 10;
 
     subplot(2,2,4);
+    if ~exist('blinkMarker', 'var')
+        plot(time, messageMarker);
+        legend('Message Occurrence');
+    else
     plot(time, messageMarker, time, blinkMarker);
     legend('Message Occurrence','Blink');
+    end
 
 end
 
