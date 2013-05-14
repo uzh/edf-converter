@@ -430,7 +430,7 @@ classdef Edf2Mat < handle
                 
                 
                 if any(eye_used == obj.EYES.BINOCULAR)
-                    obj.Samples.posX        = obj.Samples.gx; % select column depending on the eye used!
+                    obj.Samples.posX        = obj.Samples.gx;
                     obj.Samples.posY        = obj.Samples.gy;
                     obj.Samples.pupilSize   = obj.Samples.pa;
                 else

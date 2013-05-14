@@ -1,4 +1,4 @@
-function plot(obj)
+function plot(obj, startIdx, endIdx)
 %PLOT plots the edf content to verify if they are useful. For all other
 %   post processing you should rather define your own plots
 %
@@ -49,6 +49,18 @@ function plot(obj)
 % #define INPUTEVENT   28  /* change of input port */
 
     assert(isa(obj, 'Edf2Mat'), 'Edf2Mat:plot', 'Only objects of type Edf2Mat can be plotted!');
+    
+    if ~exist('startIdx', 'var')
+        startIdx = 1;
+    end
+    
+    if ~exist('endIdx', 'var')
+        endIdx = numel(obj.Samples.posX);
+    end
+    if endIdx == startIdx
+        warning('Edf2Mat:plot:range','Start Index == End Index, nothing do be plotted');
+        return;
+    end
 
     screenSize = get(0,'ScreenSize');
     figure( 'Position', [screenSize(3)/4 screenSize(4)/4 2*screenSize(3)/3 2*screenSize(4)/3], ...
@@ -57,14 +69,17 @@ function plot(obj)
         'Menubar','none');
     
     
-    posX           = obj.Samples.posX;
+    posX           = obj.Samples.posX(startIdx:endIdx);
     % Y must be inverted, because eyetracker origin
     % is upper left corner in a graph its the lower left
-    posY           = obj.Samples.posY * -1;
+    posY           = obj.Samples.posY(startIdx:endIdx) * -1;
     
-    time           = obj.Samples.time;
+    time           = obj.Samples.time(startIdx:endIdx);
+    evt_time       = double(obj.RawEdf.RECORDINGS(1).time:obj.RawEdf.RECORDINGS(end).time);
+    evt_start      = evt_time(1);
+    evt_time       = evt_time - evt_start;
     messageTime    = obj.Events.Messages.time;
-    pupilsize      = obj.Samples.pupilSize;
+    pupilsize      = obj.Samples.pupilSize(startIdx:endIdx);
     blinkStart     = obj.Events.Eblink.start';
     blinkEnd       = obj.Events.Eblink.end';
     
@@ -93,24 +108,44 @@ function plot(obj)
 
     % Ploting some Event Info
     if ~isempty(blinkStart)
-        time = min(blinkStart(1), messageTime(1)): max(blinkEnd(end), messageTime(end));
-        blinkMarker = zeros(numel(time), 1);
-        for i = 1:numel(blinkStart)
-            blinkMarker((blinkStart(i) + 1:blinkEnd(i)) - blinkStart(1)) = 10;
-        end
+        blinkEnd    = blinkEnd - evt_start;
+        blinkStart  = blinkStart - evt_start;            
+        
+        blinkStart  = ismember(evt_time, blinkStart.').';
+        blinkEnd    = ismember(evt_time, blinkEnd.').';
+        idx         = 1:length(evt_time);
+        idx1        = idx(blinkStart);
+        idx2        = idx(blinkEnd);
+        idx         = arrayfun(@(x,y) (x:y).', idx1, idx2,  'UniformOutput', false);
+        idx         = vertcat(idx{:});
+        
+        blink_evt       = zeros(numel(evt_time), 1);
+        blink_evt(idx)  = 100;        
     end
     
-    messageMarker = zeros(numel(time), 1);
-    messageMarker(messageTime - messageTime(1) + 1) = 10;
+    if ~isempty(messageTime)
+        msgEvtTime      = unique(messageTime - evt_start).';
+        msg_evt_time        = unique([evt_time(:).', msgEvtTime(:).']);
+        messageMarker   = ismember(msg_evt_time, msgEvtTime);
+        idx             = 1:length(msg_evt_time);
+        idx             = idx(messageMarker);
+        msg_evt         = nan(numel(msg_evt_time), 1);
+        msg_evt(idx)    = 100;
+    end
 
     subplot(2,2,4);
-    if ~exist('blinkMarker', 'var')
-        plot(time, messageMarker);
-        legend('Message Occurrence');
-    else
-    plot(time, messageMarker, time, blinkMarker);
-    legend('Message Occurrence','Blink');
+    legendString = {};
+    if exist('blink_evt', 'var')
+        plot(evt_time(startIdx:endIdx), blink_evt(startIdx:endIdx), 'r-', 'DisplayName','Blinks');
+        legendString{end+1, 1} = 'Blinks';
+        hold on;
     end
+    if exist('msg_evt', 'var')
+        plot(msg_evt_time(startIdx:endIdx), msg_evt(startIdx:endIdx), 'bo', 'DisplayName','Message Occurrence');
+        legendString{end+1, 1} = 'Message Occurrence';        
+    end
+    legend(legendString{:});
+    hold off;
 
 end
 
