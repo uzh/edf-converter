@@ -90,7 +90,7 @@ function plot(obj, startIdx, endIdx)
 
     plot(posX, posY, 'o', 'Color','blue'); 
     title('Plot of the eye movement!');
-    axis([min(posX) max(posX) min(posY) max(posY)]);
+    axis([min(posX) - 1 max(posX) + 1 min(posY) - 1 max(posY) + 1]);
     axis('square');
 
     xlabel('x-Position');
@@ -125,7 +125,7 @@ function plot(obj, startIdx, endIdx)
     
     if ~isempty(messageTime)
         msgEvtTime      = unique(messageTime - evt_start).';
-        msg_evt_time        = unique([evt_time(:).', msgEvtTime(:).']);
+        msg_evt_time    = unique([evt_time(:).', msgEvtTime(:).']);
         messageMarker   = ismember(msg_evt_time, msgEvtTime);
         idx             = 1:length(msg_evt_time);
         idx             = idx(messageMarker);
