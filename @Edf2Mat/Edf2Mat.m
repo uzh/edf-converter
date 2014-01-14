@@ -6,7 +6,6 @@ classdef Edf2Mat < handle
     % the edf and not just part of it. The new routine is based on the work
     % of C. Kovach 2007 and is only for non-commercial use!
     %
-    % 
     %
     % Syntax: Edf2Mat(filename);
     %         Edf2Mat(filename, verbose);
@@ -43,7 +42,7 @@ classdef Edf2Mat < handle
     %                                               old procedure is active
     %
     % Other m-files required:
-    %   everything in the @folder & private folder is requiered,
+    %   everything in the @folder & private folder is required,
     %   private/edf2asc.exe and private/processEvents.m, the mex files and
     %   the dll's/frameworks. On Mac the edfapi.framework must be copied to
     %   /Library/Framworks/ !!!Not the personal Library but to the root
