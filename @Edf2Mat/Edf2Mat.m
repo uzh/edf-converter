@@ -454,7 +454,7 @@ classdef Edf2Mat < handle
                     eye_used = zeros(size(obj.Samples.time, 1), 1) + double(startRec(1).eye);
                 else
                     for i = 1 : numel(endRecordings)
-                        recNr(obj.Samples.time < endRecordings.time) = i;
+                        recNr(obj.Samples.time < endRecordings(i).time) = i;
                     end
                     eye_used = double([obj.RawEdf.RECORDINGS(recNr).eye]).';
                 end
