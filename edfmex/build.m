@@ -17,8 +17,8 @@ function build()
         case 'MACI64'
             makeHeader = @makeHeader_MacOSX;
             folder  = 'osx';
-            lib     = 'CXXLIBS=\$CXXLIBS -framework edfapi -F/Library/Frameworks';
-            include = 'CXXFLAGS=\$CXXFLAGS -I/Library/Frameworks/edfapi.framework/Headers';
+            lib     = 'CXXLIBS=$CXXLIBS -F/Library/Frameworks -framework edfapi';
+            include = 'CXXFLAGS=$CXXFLAGS -I/Library/Frameworks/edfapi.framework/Headers';
         otherwise
             error('EDF_Build:Computer:unsupported', 'This system is not supported');
     end    
@@ -29,7 +29,7 @@ function build()
     try
         %status = movefile([pwd filesep folder filesep sysDependentHeader], [pwd filesep sourceFolder filesep], 'f');
         %assert(~logical(status), 'Build:movefile', 'Move system dependent header failed');            
-       mex([sourceFolder filesep sourceFile], lib, include)
+       mex('-v', [sourceFolder filesep sourceFile], lib, include)
     catch err
         rmpath(sourceFolder);
         rethrow(err);

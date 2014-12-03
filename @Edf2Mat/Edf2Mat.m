@@ -91,6 +91,12 @@ classdef Edf2Mat < handle
     %     POSSIBILITY OF SUCH DAMAGE.
     
     % Event structure from SR-Research:
+    %     float  px[2], py[2];    /* pupil xy */
+    % 	  float  hx[2], hy[2];    /* headref xy */
+    % 	  float  pa[2]; 		 /* pupil size or area */
+    % 
+    % 	  float gx[2], gy[2];    /* screen gaze xy */
+    %     float rx, ry;          /* screen pixels per degree */
     %     UINT32 time; /* effective time of event */
     %     INT16 type; /* event type */
     %     UINT16 read; /* flags which items were included */
@@ -99,15 +105,15 @@ classdef Edf2Mat < handle
     %     UINT32 entime; /* end time of the event */
     %     float hstx, hsty; /* headref starting points */
     %     float gstx, gsty; /* gaze starting points */
-    %     float sta;        // Undocumented by sr-research, adis
+    %     float sta;        // Undocumented by sr-research, adrian etters
     %     assumption: start area of pupil
     %     float henx, heny; /* headref ending points */
     %     float genx, geny; /* gaze ending points */
-    %     float ena;        // Undocumented by sr-research, adis
+    %     float ena;        // Undocumented by sr-research, adrian etters
     %     assumption: end area of pupil
     %     float havx, havy; /* headref averages */
     %     float gavx, gavy; /* gaze averages */
-    %     float ava;        // Undocumented by sr-research, adis
+    %     float ava;        // Undocumented by sr-research, adrian etters
     %     assumption: average area of pupil
     %     float avel; /* accumulated average velocity */
     %     float pvel; /* accumulated peak velocity */
@@ -454,7 +460,7 @@ classdef Edf2Mat < handle
                     eye_used = zeros(size(obj.Samples.time, 1), 1) + double(startRec(1).eye);
                 else
                     for i = 1 : numel(endRecordings)
-                        recNr(obj.Samples.time < endRecordings.time) = i;
+                        recNr(obj.Samples.time < endRecordings(i).time) = i;
                     end
                     eye_used = double([obj.RawEdf.RECORDINGS(recNr).eye]).';
                 end

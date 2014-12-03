@@ -289,7 +289,7 @@ function processEvents(obj)
         
         % Pupil Info        
         pupilTypeNames          = fieldnames(obj.PUPIL);
-        pupilInfo               = pupilTypeNames(double(startRecordings.pupil_type + 1));
+        pupilInfo               = pupilTypeNames(double(cat(1, startRecordings.pupil_type) + 1));
 % 
         startfix                = obj.RawEdf.FEVENT([obj.RawEdf.FEVENT.type].' == obj.EVENT_TYPES.STARTFIX);
         Sfix.eye                = eyeNames(double([startfix.eye]) + 1).'; % + 1 because in c indexing start with 0 whereas in matlab with 1
