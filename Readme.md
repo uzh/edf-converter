@@ -142,7 +142,7 @@ Many thanks to Stefan Schmid to point out typos.
 
 
 ## Bibliography
-Kovach, C. (2011, 01 12). SR Research. Retrieved from SR Research Support: https://www.sr-support.com/showthread.php?255-Import-of-EDF-file-into-Matlab&p=6781#post6781
+Kovach, C. (2011, 01 12). SR Research. Retrieved from SR Research Support: [https://www.sr-support.com/showthread.php?255-Import-of-EDF-file-into-Matlab&p=6781#post6781](https://www.sr-support.com/showthread.php?255-Import-of-EDF-file-into-Matlab&p=6781#post6781)
 
 
 
