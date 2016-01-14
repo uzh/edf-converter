@@ -139,9 +139,10 @@ classdef Edf2Mat < handle
         AUTHOR = 'Adrian Etter'; % Author of the Class
         AUTHOREMAIL = 'adrian.etter@econ.uzh.ch'; % Email of the Author
         COPYRIGHT = {'© SNS-Lab'; 'University of Zurich'}; % Copyright Info
-        VERSION = 1.6;  % Number of the latest Version
-        VERSIONDATE = '2013/April/11' % Date of the latest Version
-        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Complete backward compatibility added'; ...
+        VERSION = 1.7;  % Number of the latest Version
+        VERSIONDATE = '2016/Jan/11'; % Date of the latest Version
+        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'added new function for timeline and normalized timeline and blinktimeline'; ...
+            '2013/April/11', 'Complete backward compatibility added'; ...
             '2013/May/07', 'Bug fixes and renaming of variable. Old names persist! All event types defined'; ...
             '2013/April/11', 'Changed to mex instead of using edf.asc.exe'; ...
             '2012/Aug/10', 'Finished'; ...
@@ -187,7 +188,7 @@ classdef Edf2Mat < handle
         EYES                = struct('LEFT', 1, 'RIGHT', 2, 'BINOCULAR', 3);
         PUPIL               = struct('AREA', 0, 'DIAMETER', 1); 
         MISSING_DATA_VALUE  = -32768;
-        EMPTY_VALUE         = 1e08;
+        EMPTY_VALUE         = 1e08; % only for backward compatibility with old Edf2Mat ...
         
     end  
     
@@ -247,6 +248,8 @@ classdef Edf2Mat < handle
         samplesFilename;    % The file name of ASCII Files which stores all samples
         eventsFilename;     % The file name of ASCII Files which stores all events
         matFilename;        % The file name of MAT File which stores all Header, Samples and Events
+        timeline;
+        normalizedTimeline;
     end
     
     % PUBLIC METHODS
@@ -328,7 +331,15 @@ classdef Edf2Mat < handle
         
         function matFilename = get.matFilename(obj)
             matFilename = strrep(obj.filename, '.edf', '.mat');
-        end        
+        end    
+        
+        function timeline = get.timeline(obj)
+            timeline = obj.getTimeline();
+        end
+        
+        function timeline = get.normalizedTimeline(obj)
+            timeline = obj.getNormalizedTimeline();
+        end
         
         function convertSamples(obj)
             if obj.oldProcedure
@@ -355,6 +366,35 @@ classdef Edf2Mat < handle
             vname   = @(x) inputname(1);
             builtin('save', obj.matFilename, vname(header), vname(samples), vname(events), vname(edf), vname(thisobj));
         end    
+        
+        function [timeline, offset] = getTimeline(obj)
+            timeline       = (obj.Events.Start.time:obj.Events.End.time).';
+            offset = timeline(1);
+        end
+        
+        function [timeline, offset] = getNormalizedTimeline(obj)
+            [timeline, offset] = obj.getTimeline();
+            timeline       = timeline - offset;
+        end
+        
+        function blinkTimeline = getBlinkTimeline(obj)
+            startIndecies = arrayfun(@(x)find(obj.Samples.time == x),  ...
+                    obj.Events.Eblink.start).';
+            endIndecies = arrayfun(@(x)find(obj.Samples.time == x),  ...
+                    obj.Events.Eblink.end).';
+            
+            blinks  = mat2cell([startIndecies, endIndecies], ones(13, 1));
+            blinkTimeline = zeros(numel(obj.timeline), 1);
+            blinkTimeline(cell2mat(cellfun(@(x)colon(x(1), x(2)).', ...
+                blinks, 'UniformOutput', false))) = 1;
+        end
+        
+        function messageTimeline = getMessageTimeline(obj)
+            messageTimes        = unique(obj.Events.Messages.time);
+            extendedTimeline    = unique([obj.timeline(:); messageTimes(:)]).';
+            messageTimeline     = nan(numel(extendedTimeline), 1);
+            messageTimeline(ismember(extendedTimeline, messageTimes))    = 1;
+        end
        
     end
     

@@ -33,7 +33,7 @@ int BuildMexArrays::PopulateArrays( int Offset, int MaxRec)
     int stepsize = 100; //size of displayed steps is 100./stepsize
     
     mexPrintf("Converting:%3i%%",0);
-    
+    mexCallMATLAB(0, NULL, 0, NULL, "drawnow");
     
     
     for (int i = 0 ; ( MaxRec == 0 && i < Nrec ) || i < MaxRec  ; i++ )
@@ -46,7 +46,7 @@ int BuildMexArrays::PopulateArrays( int Offset, int MaxRec)
             if ( done  >  modtest )
             {
                 mexPrintf("\b\b\b\b%3i%%",done*100/stepsize);               
-                mexEvalString("drawnow");
+                mexCallMATLAB(0, NULL, 0, NULL, "drawnow");
                 modtest++;
             };
         };        

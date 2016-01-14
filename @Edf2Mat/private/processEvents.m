@@ -344,7 +344,7 @@ function processEvents(obj)
 % 
 
         endRecordings           = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.END);
-        End.time                = [endRecordings.time];
+        End.time                = double([endRecordings.time]);
         End.info                = {'EVENTS'};
         End.info2               = {'RES'};
         End.ppd_x_ppd_total     = sum(obj.Samples.rx)/numel(obj.Samples.rx); % What does it significate? Sum of all screen pixels per degree divided by number of samples => What does it tell?

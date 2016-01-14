@@ -57,10 +57,10 @@ function plot(obj, startIdx, endIdx)
     if ~exist('endIdx', 'var')
         endIdx = numel(obj.Samples.posX);
     end
-    if endIdx == startIdx
-        warning('Edf2Mat:plot:range','Start Index == End Index, nothing do be plotted');
-        return;
-    end
+    range = startIdx:endIdx;
+    
+    assert(numel(range) > 0, ...
+        'Edf2Mat:plot:range','Start Index == End Index, nothing do be plotted');
 
     screenSize = get(0,'ScreenSize');
     figure( 'Position', [screenSize(3)/4 screenSize(4)/4 2*screenSize(3)/3 2*screenSize(4)/3], ...
@@ -69,22 +69,20 @@ function plot(obj, startIdx, endIdx)
         'Menubar','none');
     
     
-    posX           = obj.Samples.posX(startIdx:endIdx);
+    posX           = obj.Samples.posX(range);
     % Y must be inverted, because eyetracker origin
     % is upper left corner in a graph its the lower left
-    posY           = obj.Samples.posY(startIdx:endIdx) * -1;
+    posY           = obj.Samples.posY(range) * -1;
     
-    time           = obj.Samples.time(startIdx:endIdx);
-    evt_time       = double(obj.RawEdf.RECORDINGS(1).time:obj.RawEdf.RECORDINGS(end).time);
-    evt_start      = evt_time(1);
-    evt_time       = evt_time - evt_start;
-    messageTime    = obj.Events.Messages.time;
-    pupilsize      = obj.Samples.pupilSize(startIdx:endIdx);
-    blinkStart     = obj.Events.Eblink.start';
-    blinkEnd       = obj.Events.Eblink.end';
-    
-    time = unique(time - time(1));
-    time(time < 0) = 0;
+    timeRange           = obj.Samples.time(range);
+
+    [timeline, startPoint] = obj.getTimeline();
+    timeLineRange = timeline >= min(timeRange) & ...
+                                timeline <= max(timeRange);
+    timeline       = timeline(timeLineRange);
+    timeline       = timeline - startPoint;
+
+    pupilSize      = obj.Samples.pupilSize(range);
     
     subplot(2,2,[1 3]);
 
@@ -96,52 +94,29 @@ function plot(obj, startIdx, endIdx)
     xlabel('x-Position');
     ylabel('y-Position');
 
-    % Ploting pupil size
-    
+    % Ploting pupil size    
     %
     subplot(2,2,2);
-    plot(time, pupilsize); 
+    plot(timeRange, pupilSize); 
     title('Pupil Size');
     axis('auto');
 
     xlabel('time [ms]');
-
-    % Ploting some Event Info
-    if ~isempty(blinkStart)
-        blinkEnd    = blinkEnd - evt_start;
-        blinkStart  = blinkStart - evt_start;            
-        
-        blinkStart  = ismember(evt_time, blinkStart.').';
-        blinkEnd    = ismember(evt_time, blinkEnd.').';
-        idx         = 1:length(evt_time);
-        idx1        = idx(blinkStart);
-        idx2        = idx(blinkEnd);
-        idx         = arrayfun(@(x,y) (x:y).', idx1, idx2,  'UniformOutput', false);
-        idx         = vertcat(idx{:});
-        
-        blink_evt       = zeros(numel(evt_time), 1);
-        blink_evt(idx)  = 100;        
-    end
     
-    if ~isempty(messageTime)
-        msgEvtTime      = unique(messageTime - evt_start).';
-        msg_evt_time    = unique([evt_time(:).', msgEvtTime(:).']);
-        messageMarker   = ismember(msg_evt_time, msgEvtTime);
-        idx             = 1:length(msg_evt_time);
-        idx             = idx(messageMarker);
-        msg_evt         = nan(numel(msg_evt_time), 1);
-        msg_evt(idx)    = 100;
-    end
-
     subplot(2,2,4);
     legendString = {};
-    if exist('blink_evt', 'var')
-        plot(evt_time(startIdx:endIdx), blink_evt(startIdx:endIdx), 'r-', 'DisplayName','Blinks');
+    blinkTimeline =  obj.getBlinkTimeline();
+    
+    if ~isempty(blinkTimeline) && numel(blinkTimeline) > 0
+        blinkTimeline = blinkTimeline(timeLineRange);
+        plot(timeline, blinkTimeline, 'r-', 'DisplayName','Blinks');
         legendString{end+1, 1} = 'Blinks';
         hold on;
     end
-    if exist('msg_evt', 'var')
-        plot(msg_evt_time(startIdx:endIdx), msg_evt(startIdx:endIdx), 'bo', 'DisplayName','Message Occurrence');
+    messageTimeline = obj.getMessageTimeline();
+    if ~isempty(messageTimeline) && numel(messageTimeline) > 0
+        messageTimeline = messageTimeline(timeLineRange);
+        plot(timeline, messageTimeline, 'bo', 'DisplayName','Message Occurrence');
         legendString{end+1, 1} = 'Message Occurrence';        
     end
     legend(legendString{:});
