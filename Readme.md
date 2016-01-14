@@ -1,98 +1,42 @@
 # Edf2Mat© Matlab Toolbox
 Converts EyeLink 1000 Edf files into Matlab
-Version 1.6
 
-Adrian Etter
+	Version 1.6
 
-University of Zurich
-Department of Economics
-Winterthurerstrasse 30
-CH-8006 Zurich
+	Adrian Etter
+
+	University of Zurich
+	Department of Economics
+	Winterthurerstrasse 30
+	CH-8006 Zurich
 
 E-Mail: adrian.etter@econ.uzh.ch
-URL:	http://www.econ.uzh.ch/faculty/etter.html
 
+URL:	[http://www.econ.uzh.ch/faculty/etter.html](http://www.econ.uzh.ch/faculty/etter.html)
 
+2016 Januar 14.
 
-31 March 2015
-
-
-
-
-
-
-
-
-
-
-Abstract
-
-
+### Abstract
 
 Edf2Mat is a Matlab Toolbox for easy conversion of EyeLink Edf result files. For fast verification of valid data, there is an included plot function, which displays eye movement and pupil size. There are a few examples in the example file which help analyze eye data.
 
 
+### Copyright
 
-
-
-
-
-
-
-
-
-
-Copyright
-
-Copyright © 2007-2013 Adrian Etter. All rights reserved.
+Copyright © 2007-2013 Adrian Etter, University of Zurich. All rights reserved.
 
 
 This document may be copied, modified, reproduced and redistributed for educational and personal use as long as the original author is mentioned and cited. 
 
-
-
-
-
 MATLAB® is a registered Trademark of MathWorks, Inc.™ (http://www.mathworks.com).
 EyeLink® is a registered trademark of SR Research Ltd., Mississauga, Ontario, Canada (http://www.sr-research.com)
 
-
-
-
-
-
-
-Table of contents:
-
-
-Abstract	2
-Terms and Conditions	4
-Acknowledgment	4
-License	4
-Installation	5
-Requirements	5
-Files needed	5
-How to use Edf2Mat – Toolbox	6
-Acknowledgment	9
-Bibliography	9
-
-
-
-
-
-
-## Terms and Conditions
-
-
-Acknowledgment
+### Acknowledgment
 
 
 You are allowed to use this software for free, but please acknowledge if you are using this software to process Edf-files:
 
 The conversion of the EyeLink® 1000 Edf files was done with the Edf2Mat Matlab Toolbox designed and developed by Adrian Etter at the University of Zurich.
-
-
-
 
 
 ## License
@@ -119,12 +63,9 @@ the edfapi.framework must be in `/Library/Frameworks`. The Library can be found 
 ### Files needed
 
 
-•	The Edf2Mat Class
-•	All files in the private folder
-•	All Dlls in the private folder
-
-
-
+- The Edf2Mat Class
+- All files in the private folder
+- All Dlls in the private folder
 
 ## How to use Edf2Mat – Toolbox
 
@@ -178,31 +119,23 @@ The Edf2Mat class has its own plot functionality to plot the content. It’s mor
 
 
 
-Fig. 1 Output of the Edf2Mat plot command
-
-
-
-
-#### Last 2000 Elements
+#### Plot last 2000 Elements
 
 In order to plot eye movement only in a specified time range, the Matlab builitin plot command could be used as following:
 
-
+```
 figure();
 plot(edf1.Samples.posX(end - 2000:end), edf1.Samples.posY(end - 2000:end), 'o');
-
-
-
-Fig. 2 Only plot a certain time frame of eye movement
+```
 
 #### Plot the pupil size
 
 To simply plot the pupil size for a given time window, the pupil size array can be accessed as stated in the next line.
 
+```
 figure();
 plot(edf1.Samples.pa(2, end - 500:end));
-
-Fig. 3 The progress / development of the pupil size for a given time frame
+```
 
 ## Acknowledgment
 Many thanks to Stefan Schmid to point out typos.
