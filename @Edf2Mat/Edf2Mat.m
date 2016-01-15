@@ -383,7 +383,7 @@ classdef Edf2Mat < handle
             endIndecies = arrayfun(@(x)find(obj.Samples.time == x),  ...
                     obj.Events.Eblink.end).';
             
-            blinks  = mat2cell([startIndecies, endIndecies], ones(13, 1));
+            blinks  = mat2cell([startIndecies, endIndecies], ones(numel(startIndecies), 1));
             blinkTimeline = zeros(numel(obj.timeline), 1);
             blinkTimeline(cell2mat(cellfun(@(x)colon(x(1), x(2)).', ...
                 blinks, 'UniformOutput', false))) = 1;
