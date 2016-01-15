@@ -31,9 +31,11 @@ int BuildMexArrays::PopulateArrays( int Offset, int MaxRec)
     int modtest = 0;
     int done = 0;
     int stepsize = 100; //size of displayed steps is 100./stepsize
-    
-    mexPrintf("Converting:%3i%%",0);
+    mxArray *timeout = mxCreateDoubleScalar(0.00001); // MATLAB 2015b hack, otherwise progress is not showing
+
+    mexPrintf("Converting:%3i%%\n",0);
     mexCallMATLAB(0, NULL, 0, NULL, "drawnow");
+    mexCallMATLAB(0, NULL, 1, &timeout, "pause");
     
     
     for (int i = 0 ; ( MaxRec == 0 && i < Nrec ) || i < MaxRec  ; i++ )
@@ -47,6 +49,7 @@ int BuildMexArrays::PopulateArrays( int Offset, int MaxRec)
             {
                 mexPrintf("\b\b\b\b%3i%%",done*100/stepsize);               
                 mexCallMATLAB(0, NULL, 0, NULL, "drawnow");
+                mexCallMATLAB(0, NULL, 1, &timeout, "pause");
                 modtest++;
             };
         };        
