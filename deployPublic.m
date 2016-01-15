@@ -12,5 +12,7 @@ function deployPublic()
         copyfile(files2copy{iFile}, [destination filesep files2copy{iFile}], 'f');
     end
 
-    
+    system(['git -C ', destination, ' add . ']);
+    system(['git -C ', destination, ' commit -m "Release: ', datestr(now, 'YYYYMMDDHH'), '"']);
+    system(['git -C ', destination, ' push']);
 end
