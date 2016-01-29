@@ -59,6 +59,25 @@ The Edf2Mat Toolbox uses slightly modified code (Kovach, 2011) from C. Kovach 20
 
 the edfapi.framework must be in `/Library/Frameworks`. The Library can be found in the Package. Attention: If the Zip file was unpacked on windows first, and then copied, the folder structure will be broken. The zip-file must be extracted on a Mac in order to work. Otherwise the symlinks will be broken.
 
+on os x in `/Library/Frameworks` it should look like the following
+
+```
+edfapi.framework/
+├── Headers -> Versions/Current/Headers
+├── Resources -> Versions/Current/Resources
+├── Versions
+│   ├── A
+│   │   ├── Headers
+│   │   │   ├── edf.h
+│   │   │   ├── edf_data.h
+│   │   │   └── edftypes.h
+│   │   ├── Resources
+│   │   │   └── Info.plist
+│   │   └── edfapi
+│   └── Current -> A
+└── edfapi -> Versions/Current/edfapi
+```
+
 
 ### Files needed
 
