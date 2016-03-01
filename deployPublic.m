@@ -14,5 +14,6 @@ function deployPublic()
 
     system(['git -C ', destination, ' add . ']);
     system(['git -C ', destination, ' commit -m "Release: ', datestr(now, 'YYYYMMDDHH'), '"']);
-    system(['git -C ', destination, ' push']);
+    system(['git -C ', destination, ' push origin']);
+    system(['git -C ', destination, ' push github']);
 end
