@@ -53,7 +53,8 @@ The Edf2Mat Toolbox uses slightly modified code (Kovach, 2011) from C. Kovach 20
 
 
 #### On Windows: Matlab
-Ensure the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145) is installed
+- Ensure the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145) is installed
+- Ensure the [Visual C++ Redistributable for Visual Studio 2008](https://www.microsoft.com/en-us/download/details.aspx?id=29) is installed
 
 
 
