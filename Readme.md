@@ -1,7 +1,7 @@
 # Edf2Mat© Matlab Toolbox
 Converts EyeLink 1000 Edf files into Matlab
 
-	Version 1.6
+	Version 1.8
 
 	Adrian Etter
 
@@ -14,7 +14,7 @@ E-Mail: adrian.etter@econ.uzh.ch
 
 URL:	[http://www.econ.uzh.ch/faculty/etter.html](http://www.econ.uzh.ch/faculty/etter.html)
 
-2016 Januar 14.
+2016 June 14.
 
 ### Abstract
 
