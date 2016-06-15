@@ -139,10 +139,11 @@ classdef Edf2Mat < handle
         AUTHOR = 'Adrian Etter'; % Author of the Class
         AUTHOREMAIL = 'adrian.etter@econ.uzh.ch'; % Email of the Author
         COPYRIGHT = {'© SNS-Lab'; 'University of Zurich'}; % Copyright Info
-        VERSION = 1.8;  % Number of the latest Version
-        VERSIONDATE = '2016/June/14'; % Date of the latest Version
-        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'fix version mess'; ...
-            '2016/Jan/11', 'added new function for timeline and normalized timeline and blinktimeline'
+        VERSION = 1.9;  % Number of the latest Version
+        VERSIONDATE = '2016/June/15'; % Date of the latest Version
+        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Add backwards compatibility with older macs'; ...
+            '2016/June/14', 'fix version mess'; ...
+            '2016/Jan/11', 'added new function for timeline and normalized timeline and blinktimeline'; ...
             '2013/April/11', 'Complete backward compatibility added'; ...
             '2013/May/07', 'Bug fixes and renaming of variable. Old names persist! All event types defined'; ...
             '2013/April/11', 'Changed to mex instead of using edf.asc.exe'; ...
@@ -298,9 +299,17 @@ classdef Edf2Mat < handle
         end   
         
         function processFile(obj)
-            
-            if ~obj.oldProcedure                
-                obj.RawEdf      = edfimporter(obj.filename);
+            importer = @(varargin)edfimporter(varargin{:});
+            if ~obj.oldProcedure  
+                if ismac
+                    [~, version] = unix('sw_vers -productVersion');
+                    version = strsplit(version, '.');
+                    version = str2double(version{3});
+                    if (version < 11) 
+                       importer = @(varargin)edfimporter_pre11(varargin{:});
+                    end                
+                end
+                obj.RawEdf      = importer(obj.filename);
                 obj.Header.raw  = obj.RawEdf.HEADER;
                 obj.Samples     = obj.RawEdf.FSAMPLE;
             end

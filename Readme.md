@@ -1,7 +1,7 @@
 # Edf2Mat© Matlab Toolbox
 Converts EyeLink 1000 Edf files into Matlab
 
-	Version 1.8
+	Version 1.9
 
 	Adrian Etter
 
