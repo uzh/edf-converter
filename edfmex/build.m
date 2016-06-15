@@ -3,6 +3,7 @@ function build()
     sourceFolder        = 'source';
     sourceFile          = 'edfimporter.cpp';
 
+    flags       = {'-largeArrayDims'};
     switch computer
         case 'PCWIN'
             makeHeader = @makeHeader_Win32;
@@ -29,7 +30,7 @@ function build()
     try
         %status = movefile([pwd filesep folder filesep sysDependentHeader], [pwd filesep sourceFolder filesep], 'f');
         %assert(~logical(status), 'Build:movefile', 'Move system dependent header failed');            
-       mex('-v', [sourceFolder filesep sourceFile], lib, include)
+       mex('-v', flags{:}, [sourceFolder filesep sourceFile], lib, include)
     catch err
         rmpath(sourceFolder);
         rethrow(err);
