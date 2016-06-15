@@ -297,9 +297,17 @@ classdef Edf2Mat < handle
         end   
         
         function processFile(obj)
-            
-            if ~obj.oldProcedure                
-                obj.RawEdf      = edfimporter(obj.filename);
+            importer = @(varargin)edfimporter(varargin{:});
+            if ~obj.oldProcedure  
+                if ismac
+                    [~, version] = unix('sw_vers -productVersion');
+                    version = strsplit(version, '.');
+                    version = str2double(version{3});
+                    if (version < 11) 
+                       importer = @(varargin)edfimporter_pre11(varargin{:});
+                    end                
+                end
+                obj.RawEdf      = importer(obj.filename);
                 obj.Header.raw  = obj.RawEdf.HEADER;
                 obj.Samples     = obj.RawEdf.FSAMPLE;
             end
