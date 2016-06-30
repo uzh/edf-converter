@@ -304,7 +304,7 @@ classdef Edf2Mat < handle
                 if ismac
                     [~, version] = unix('sw_vers -productVersion');
                     version = strsplit(version, '.');
-                    version = str2double(version{3});
+                    version = str2double(version{2});
                     if (version < 11) 
                        importer = @(varargin)edfimporter_pre11(varargin{:});
                     end                
