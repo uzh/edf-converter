@@ -10,3 +10,6 @@ Edf2Mat
 Edf2Mat.piz
 public/edf-converter
 !public/edf-converter/eyedata.edf
+
+/*.pdf
+/*.docx
