@@ -1,32 +1,46 @@
-% edf = Edf2Mat('arnaud.edf');
-%% initialize and define Variables
+%% Open file, for the Heatmap
 
-edf = edf0;
+defaultfile = 'eyedata.edf';
+[file,path] = uigetfile(defaultfile,'Heatmap for file name');
+
+assert(strcmp(file(end - 3:end), '.edf'), 'hestHeatmapMB:filename', ...
+                  'Filename must be of type .edf!');
+
+% convert with Edf2Mat
+edf = Edf2Mat(file);
+
+%% initialize and define Variables
+clf('reset');
+
+%variables
+gaussSize = 80;
+gaussSigma = 20;
 
 posX = edf.Samples.posX;
 posY = edf.Samples.posY;
 
+%generating data for heatmap
 gazedata = [posY, posX];
-sizeX = ceil(max(gazedata(:,1))) + 1;
-sizeY = ceil(max(gazedata(:,2))) + 1;
-out = zeros(sizeX, sizeY);
+gazedata = gazedata(~isnan(gazedata(:, 1)), :);
+gazedata = ceil(gazedata) + 1;
+data = accumarray(gazedata, 1);
+gaze = zeros(size(data));
+cut = mean(data(:));
+data(data > cut) = cut;
 
-data = hist3(gazedata, [sizeX, sizeY]);
+kernel = createGauss(gaussSize, gaussSigma);
+heatMap = conv2(data, kernel, 'same');
 
-kernel = createGauss(60, 1);
-J = conv2(data, kernel, 'same');
+gaze(data > 0) = mean(heatMap(:));
 
-heatMap = log(J);
 
-subplot(1,3,1);
-imagesc(heatMap);
-
-subplot(1,3,2);
-plot(gazedata(:,2), gazedata(:,1), '.');
-set(gca, 'YDir','reverse');
-
-subplot(1,3,3);
+%visualize heatmap
+figure(1);
 hold on;
 imagesc(heatMap);
-plot(gazedata(:,2), gazedata(:,1), '.');
+% contour(heatMap);
+% plot(gazedata(:,2), gazedata(:,1), 'k');
 set(gca, 'YDir','reverse');
+colorbar;
+alpha color;
+hold off;
