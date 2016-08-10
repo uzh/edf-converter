@@ -78,9 +78,10 @@ function plot(obj, startIdx, endIdx)
 
     
     % Ploting Eye Movement
-    subplot(2,2,[1 3]);
+    subplot(2,2,1);
     plot(posX, posY, 'o', 'Color','blue'); 
-    title('Plot of the eye movement!');
+    
+    title('Plot of the eye movement');
     axis([min(posX) - 1 max(posX) + 1 min(posY) - 1 max(posY) + 1]);
     axis('square');
     xlabel('x-Position');
@@ -90,10 +91,19 @@ function plot(obj, startIdx, endIdx)
     subplot(2,2,2);
     [tRange, pupil] = pupilSize(obj, startIdx, endIdx);
     plot(tRange, pupil); 
+    
     title('Pupil Size');
     axis('auto');
-
     xlabel('time [ms]');
+    
+    % Ploting heatmap
+    subplot(2,2,3);
+    imagesc(heatmap(obj, startIdx, endIdx));
+    
+    set(gca, 'YDir','reverse');
+	colorbar;
+	alpha color;
+    title('HeatMap of the eye movement');
     
     % Ploting blinkdata
     subplot(2,2,4);

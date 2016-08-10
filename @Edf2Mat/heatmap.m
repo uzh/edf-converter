@@ -55,17 +55,5 @@ heatMap = conv2(data, kernel, 'same');
 
 gaze(data > 0) = mean(heatMap(:));
 
-% % % % % %%
-% % % % % %visualize heatmap
-% % % % % figure(1);
-% % % % % hold on;
-% % % % % imagesc(heatMap);
-% % % % % % contour(heatMap);
-% % % % % % plot(gazedata(:,2), gazedata(:,1), 'k');
-% % % % % set(gca, 'YDir','reverse');
-% % % % % colorbar;
-% % % % % alpha color;
-% % % % % hold off;
-
 end
 
