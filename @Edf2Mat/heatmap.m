@@ -8,14 +8,17 @@ function [heatMap, gaze] = heatmap(obj, startIdx, endIdx)
 %# [h, g] = heatMap(obj, startIdx, endIdx);
 %
 %% Description
-%   Detailed explanation goes here
+%   This function generates the data array (heatMap) for visualize a heatmap of the
+%   eyetracker. As a second output it returns an array (gaze) with all
+%   positions rated the same.
 %
 %
 %% Example
 %# [h, g] = edf.heatMap();
 %
 %% see also
-%
+%# Edf2Mat.plotHeatmap()
+%# Edf2Mat.plot()
 
 % Initialization,checking 
 assert(isa(obj, 'Edf2Mat'), 'Edf2Mat:plot', ...
