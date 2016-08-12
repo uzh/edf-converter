@@ -52,7 +52,7 @@ classdef Edf2Mat < handle
     %   no
     %
     %
-    % See also: Edf2Mat.plot(), Edf2Mat.save()
+    % See also: Edf2Mat.plot(), Edf2Mat.save(), Edf2Mat.heatmap()
     %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header          
     %           Edf2Mat.about(), Edf2Mat.version()
     %
@@ -136,12 +136,13 @@ classdef Edf2Mat < handle
     properties (Constant)            
         % Here we add the Version, Author, Copyright Info and the Change
         % Log
-        AUTHOR = 'Adrian Etter'; % Author of the Class
-        AUTHOREMAIL = 'adrian.etter@econ.uzh.ch'; % Email of the Author
-        COPYRIGHT = {'© SNS-Lab'; 'University of Zurich'}; % Copyright Info
-        VERSION = 1.9;  % Number of the latest Version
-        VERSIONDATE = '2016/June/15'; % Date of the latest Version
-        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Add backwards compatibility with older macs'; ...
+        AUTHOR = 'Adrian Etter, Marc Biedermann'; % Author of the Class
+        AUTHOREMAIL = 'engineering@econ.uzh.ch'; % Email of the Author
+        COPYRIGHT = {'Department of Economics'; 'University of Zurich'}; % Copyright Info
+        VERSION = 1.10;  % Number of the latest Version
+        VERSIONDATE = '2016/August/12'; % Date of the latest Version
+        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Add new Feature heatmap to the class'; ...
+            '2016/June/15', 'Add backwards compatibility with older macs'; ...
             '2016/June/14', 'fix version mess'; ...
             '2016/Jan/11', 'added new function for timeline and normalized timeline and blinktimeline'; ...
             '2013/April/11', 'Complete backward compatibility added'; ...
@@ -204,6 +205,7 @@ classdef Edf2Mat < handle
         verbose         = false;
         output;
         cases           = struct('samples', 'Samples', 'events', 'Events');
+        imhandle;
     end
     
     % PRIVATE WRITABLE VARIABLES
@@ -410,7 +412,7 @@ classdef Edf2Mat < handle
     
     % PRIVATE METHODS
     methods (Access = private)       
-        
+
         function convertFile(obj, kind)
             if obj.oldProcedure
                 if obj.verbose
@@ -533,8 +535,8 @@ classdef Edf2Mat < handle
         % function proccessEvents is in private/processEvents
     end
     
-    % STATIC METHODS
-    methods (Static)       
+    % STATIC METHODS    
+    methods (Static)
         function ver = version()
             % Edf2Mat.version returns the version of the class
             %
