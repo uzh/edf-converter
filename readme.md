@@ -150,7 +150,7 @@ In order to plot eye movement only in a specified time range, the Matlab builiti
 figure();
 plot(edf1.Samples.posX(end - 2000:end), edf1.Samples.posY(end - 2000:end), 'o');
 ```
-<img src="plottingEyedata.png" />
+![alt text] (plottingEyedata.png "output picture of plot(edf)-function")
 
 #### Plot the pupil size
 
