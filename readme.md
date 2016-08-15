@@ -4,29 +4,30 @@ Converts EyeLink 1000 Edf files into Matlab
 	Version 1.9
 
 	Adrian Etter
+	Marc Biedermann
 
 	University of Zurich
 	Department of Economics
 	Winterthurerstrasse 30
 	CH-8006 Zurich
 
-E-Mail: adrian.etter@econ.uzh.ch
+E-Mail: engineering@econ.uzh.ch
 
 URL:	[http://www.econ.uzh.ch/faculty/etter.html](http://www.econ.uzh.ch/faculty/etter.html)
 
-2016 June 14.
+2016 August 15.
 
 ### Abstract
 
-Edf2Mat is a Matlab Toolbox for easy conversion of EyeLink Edf result files. For fast verification of valid data, there is an included plot function, which displays eye movement and pupil size. There are a few examples in the example file which help analyze eye data.
+Edf2Mat is a Matlab Toolbox for easy conversion of EyeLink Edf result files. For fast verification of valid data, there is an included plot function, which displays eye movement,  pupil size and a heatmap of the eye movement. There are a few examples in the example file which help analyze eye data.
 
 
 ### Copyright
 
-Copyright © 2007-2013 Adrian Etter, University of Zurich. All rights reserved.
+Copyright © 2007-2016 Adrian Etter, Marc Biedermann, University of Zurich. All rights reserved.
 
 
-This document may be copied, modified, reproduced and redistributed for educational and personal use as long as the original author is mentioned and cited. 
+This document may be copied, modified, reproduced and redistributed for educational and personal use as long as the original author is mentioned and cited.
 
 MATLAB® is a registered Trademark of MathWorks, Inc.™ (http://www.mathworks.com).
 EyeLink® is a registered trademark of SR Research Ltd., Mississauga, Ontario, Canada (http://www.sr-research.com)
@@ -36,7 +37,7 @@ EyeLink® is a registered trademark of SR Research Ltd., Mississauga, Ontario, C
 
 You are allowed to use this software for free, but please acknowledge if you are using this software to process Edf-files:
 
-The conversion of the EyeLink® 1000 Edf files was done with the Edf2Mat Matlab Toolbox designed and developed by Adrian Etter at the University of Zurich.
+The conversion of the EyeLink® 1000 Edf files was done with the Edf2Mat Matlab Toolbox designed and developed by Adrian Etter and Marc Biedermann at the University of Zurich.
 
 
 ## License
@@ -100,16 +101,16 @@ Type `help` for help
 
   	Edf2Mat is a converter to convert Eyetracker data files to
   	Matlab file and perform some tasks on the data
- 
+
   	The new procedure uses code from SR-Research that returns all info of
   	the edf and not just part of it. The new routine is based on the work
   	of C. Kovach 2007 and is only for non-commercial use!
- 
-  
- 
+
+
+
   	Syntax: Edf2Mat(filename);
           Edf2Mat(filename, verbose);
- 	
+
 
  	Inputs:
     	filename:           must be of type *.edf     
@@ -117,7 +118,7 @@ Type `help` for help
                         edf2asc.exe, you can set this argument to
                         true, default is false
     	verbose:            logical, can be true or false, default is true.
-                        If you want to supress output to console, 
+                        If you want to supress output to console,
                         verbose has to be false
 
 
@@ -149,6 +150,7 @@ In order to plot eye movement only in a specified time range, the Matlab builiti
 figure();
 plot(edf1.Samples.posX(end - 2000:end), edf1.Samples.posY(end - 2000:end), 'o');
 ```
+<img src="plottingEyedata.png" />
 
 #### Plot the pupil size
 
@@ -159,12 +161,15 @@ figure();
 plot(edf1.Samples.pa(2, end - 500:end));
 ```
 
+#### Plot just the heatmap of the eye movement
+
+```
+plotHeatmap(edf1)
+```
+
 ## Acknowledgment
-Many thanks to Stefan Schmid to point out typos.
+Many thanks to Stefan Schmid and Adrian Etter to point out typos.
 
 
 ## Bibliography
 Kovach, C. (2011, 01 12). SR Research. Retrieved from SR Research Support: [https://www.sr-support.com/showthread.php?255-Import-of-EDF-file-into-Matlab&p=6781#post6781](https://www.sr-support.com/showthread.php?255-Import-of-EDF-file-into-Matlab&p=6781#post6781)
-
-
-
