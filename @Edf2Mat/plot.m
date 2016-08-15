@@ -78,7 +78,7 @@ function plot(obj, startIdx, endIdx)
 
     
     % Ploting Eye Movement
-    subplot(2,2,1);
+    subplot(2,2,[1 3]);
     plot(posX, posY, 'o', 'Color','blue'); 
     
     title('Plot of the eye movement');
@@ -97,7 +97,7 @@ function plot(obj, startIdx, endIdx)
     xlabel('time [ms]');
     
     % Ploting heatmap
-    subplot(2,2,3);
+    subplot(2,2,4);
     obj.imhandle = imagesc(heatmap(obj, startIdx, endIdx));
     % Register the click callbacks:
     % register mouse down function handle
@@ -105,14 +105,9 @@ function plot(obj, startIdx, endIdx)
     % register mouse up mouse
     obj.imhandle.Parent.Parent.WindowButtonUpFcn = @(object, eventdata)obj.mouseClicked(false);
     
-    set(gca, 'YDir','reverse');
+    set(obj.imhandle.Parent, 'YDir','reverse');
 	colorbar;
 % 	alpha color;
     title('HeatMap of the eye movement');
-    
-    % Ploting blinkdata
-    subplot(2,2,4);
-    plotBlinkData(obj, startIdx, endIdx);
-    hold off;
 
 end
