@@ -139,7 +139,7 @@ The Edf2Mat class has its own plot functionality to plot the content. It’s mor
 
 
 `plot(edf1);`
-
+(plottingEyedata.png)
 
 
 #### Plot last 2000 Elements
@@ -150,7 +150,6 @@ In order to plot eye movement only in a specified time range, the Matlab builiti
 figure();
 plot(edf1.Samples.posX(end - 2000:end), edf1.Samples.posY(end - 2000:end), 'o');
 ```
-<img src="plottingEyedata.png" />
 
 #### Plot the pupil size
 
