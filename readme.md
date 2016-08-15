@@ -139,7 +139,7 @@ The Edf2Mat class has its own plot functionality to plot the content. It’s mor
 
 
 `plot(edf1);`
-(plottingEyedata.png)
+(see also: plottingEyedata.png)
 
 
 #### Plot last 2000 Elements
@@ -165,6 +165,7 @@ plot(edf1.Samples.pa(2, end - 500:end));
 ```
 plotHeatmap(edf1)
 ```
+(see also: plottingHeatmap.png)
 
 ## Acknowledgment
 Many thanks to Stefan Schmid and Adrian Etter to point out typos.
