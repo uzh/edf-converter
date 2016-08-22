@@ -18,10 +18,6 @@ function plotHeatmap(obj, startIdx, endIdx, image)
     if ~exist('endIdx', 'var')
         endIdx = numel(obj.Samples.posX);
     end
-
-    assert(any(strcmp(image(end - 3:end), {'.jpg', '.png', '.bmp', '.gif'})), ...
-            'Edf2Mat:plotHeatmap:validateIMG', ...
-            'Filename must be of type jpg, jpeg, png, bmp, gif!');
     
     range = startIdx:endIdx;
     
@@ -39,19 +35,21 @@ function plotHeatmap(obj, startIdx, endIdx, image)
 
     % load image for layering with heatmap
     if exist('image', 'var')
-    imageI = imread(image);
+        imageI = imread(image);
     
         % validate image
-        
+        assert(any(strcmp(image(end - 3:end), {'.jpg', '.png', '.bmp', '.gif'})), ...
+            'Edf2Mat:plotHeatmap:validateIMG', ...
+            'Filename must be of type jpg, jpeg, png, bmp, gif!');
         assert(obj.imhandle.XData(2) == size(imageI,1), ...
             'Edf2Mat:plot:image:XData', 'Nummber of pixels in x direction is not equal');
         assert(obj.imhandle.YData(2) == size(imageI,2), ...
             'Edf2Mat:plot:image:XData', 'Nummber of pixels in x direction is not equal');
-    %visualize image    
-    imageNew = imagesc(imageI);
-    set(imageNew, 'AlphaData', 0.3);
-    else
         
+        %visualize image    
+        imageNew = imagesc(imageI);
+        set(imageNew, 'AlphaData', 0.3);
+    else
         % if no image will be imported, it returns just the heatmap
     end
         
