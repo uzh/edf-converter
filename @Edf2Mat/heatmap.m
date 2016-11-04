@@ -47,6 +47,7 @@ posY = obj.Samples.posY(range);
 %generating data for heatmap
 gazedata = [posY, posX];
 gazedata = gazedata(~isnan(gazedata(:, 1)), :);
+gazedata = gazedata + abs(min(gazedata(:)));
 gazedata = ceil(gazedata) + 1;
 data = accumarray(gazedata, 1);
 gaze = zeros(size(data));
