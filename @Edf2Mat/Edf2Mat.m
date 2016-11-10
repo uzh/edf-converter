@@ -252,6 +252,7 @@ classdef Edf2Mat < handle
         samplesFilename;    % The file name of ASCII Files which stores all samples
         eventsFilename;     % The file name of ASCII Files which stores all events
         matFilename;        % The file name of MAT File which stores all Header, Samples and Events
+        fails;              % If preparing a folder, it stores all files, who couldn't be converted
         timeline;
         normalizedTimeline;
     end
@@ -262,6 +263,7 @@ classdef Edf2Mat < handle
             assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
             assert(exist('filename', 'var') ...
                   && ischar(filename) ...
+                  || isdir(filename) ...
                   && size(filename, 2) >= 4 ...
                   && strcmp(filename(end - 3:end), '.edf'), ...
                   'EdfConverter:filename', ...
@@ -297,8 +299,49 @@ classdef Edf2Mat < handle
                 end
             end
             
-            obj.processFile();
-        end   
+            if isdir(obj.filename)
+                obj.processFolder();
+            else
+                obj.processFile();
+            end
+        end
+        
+        function processFolder(obj)
+            % working directiory (.edf data folder)
+            workfolder = obj.filename;
+            
+            % variables
+            filenames = dir([workfolder, filesep, '*.edf']);
+            allNames = {filenames.name}';
+            folder = [filenames(1).folder];
+            nrFiles = numel(allNames);
+            
+            isFail = false(nrFiles,1);
+            
+            for currentfile = 1:nrFiles
+                file = [folder, filesep(), allNames{currentfile}];
+                try
+                    edf = Edf2Mat(file);
+                    
+                    edf.plot()
+                    fig = gcf();
+                    fig.PaperOrientation = 'landscape';
+                    print([workfolder, filesep(), allNames{currentfile}(1:end-4)], '-dpdf', '-fillpage');
+                    close(fig);
+                    
+                    isFail(currentfile) = false;
+                    fprintf('Convertion status: %d out of %d done\n', currentfile, nrFiles);
+                catch me
+                    isFail(currentfile) = true;
+                    fprintf('Convertion status: %s convertion failed\n', allNames{currentfile});
+                end
+            end
+            
+            if any(isFail == 1)
+                obj.fails = allNames(isFail);
+            end
+            fprintf('Convertion status: FINISHED\n');
+        end
         
         function processFile(obj)
             importer = @(varargin)edfimporter(varargin{:});
