@@ -74,6 +74,6 @@ end
 if plotRange(3) < 0 
     plotRange(3:4) = [0, max(posY) + abs(plotRange(3))];
 end
-
+plotRange = floor(plotRange);
 end
 
