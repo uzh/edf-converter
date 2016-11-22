@@ -1,15 +1,15 @@
 # Edf2Mat© Matlab Toolbox
 Converts EyeLink 1000 Edf files into Matlab
 
-	Version 1.9
+  Version 1.9
 
-	Adrian Etter
-	Marc Biedermann
+  Adrian Etter
+  Marc Biedermann
 
-	University of Zurich
-	Department of Economics
-	Schönberggasse 1
-	CH-8001 Zurich
+  University of Zurich
+  Department of Economics
+  Schönberggasse 1
+  CH-8001 Zurich
 
 E-Mail: engineering@econ.uzh.ch
 
@@ -93,39 +93,39 @@ edfapi.framework/
 ## How to use Edf2Mat – Toolbox
 
 
-There is an `edf2mat_example` script. Have a look at it.
+There is an `Example.m` script. Have a look at it.
 Type `help` for help
 
-	help Edf2Mat
+  help Edf2Mat
 
 
-  	Edf2Mat is a converter to convert Eyetracker data files to
-  	Matlab file and perform some tasks on the data
+    Edf2Mat is a converter to convert Eyetracker data files to
+    Matlab file and perform some tasks on the data
 
-  	The new procedure uses code from SR-Research that returns all info of
-  	the edf and not just part of it. The new routine is based on the work
-  	of C. Kovach 2007 and is only for non-commercial use!
+    The new procedure uses code from SR-Research that returns all info of
+    the edf and not just part of it. The new routine is based on the work
+    of C. Kovach 2007 and is only for non-commercial use!
 
 
 
-  	Syntax: Edf2Mat(filename);
+    Syntax: Edf2Mat(filename);
           Edf2Mat(filename, verbose);
 
 
- 	Inputs:
-    	filename:           must be of type *.edf     
-    	useOldProcedure:    If you want to use the old procedure with
-                        edf2asc.exe, you can set this argument to
-                        true, default is false
-    	verbose:            logical, can be true or false, default is true.
-                        If you want to supress output to console,
-                        verbose has to be false
+   Inputs:
+      filename:           must be of type *.edf     
+      useOldProcedure:    If you want to use the old procedure with
+                          edf2asc.exe, you can set this argument to
+                          true, default is false
+      verbose:            logical, can be true or false, default is true.
+                          If you want to suppress output to console,
+                          verbose has to be false
 
 
-	The Basic functionality is as follows:
-	Convert Edf File
+  The Basic functionality is as follows:
+  Convert Edf File
 
-	edf1 = Edf2Mat('fMRI_Results_sub_025_270712EYE25r1.edf');
+  edf1 = Edf2Mat('fMRI_Results_sub_025_270712EYE25r1.edf');
 
 
 Calling the Edf2Mat with a filename converts the given edf file to a Matlab structure, which will be available in the Matlab workspace.

@@ -16,7 +16,7 @@ classdef Edf2Mat < handle
     %                       edf2asc.exe, you can set this argument to
     %                       true, default is false
     %   verbose:            logical, can be true or false, default is true.
-    %                       If you want to supress output to console, 
+    %                       If you want to suppress output to console, 
     %                       verbose has to be false    
     %
     % Outputs:
