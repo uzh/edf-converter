@@ -52,7 +52,7 @@ classdef Edf2Mat < handle
     %   no
     %
     %
-    % See also: Edf2Mat.plot(), Edf2Mat.save()
+    % See also: Edf2Mat.plot(), Edf2Mat.save(), Edf2Mat.heatmap()
     %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header          
     %           Edf2Mat.about(), Edf2Mat.version()
     %
@@ -136,12 +136,13 @@ classdef Edf2Mat < handle
     properties (Constant)            
         % Here we add the Version, Author, Copyright Info and the Change
         % Log
-        AUTHOR = 'Adrian Etter'; % Author of the Class
-        AUTHOREMAIL = 'adrian.etter@econ.uzh.ch'; % Email of the Author
-        COPYRIGHT = {'© SNS-Lab'; 'University of Zurich'}; % Copyright Info
-        VERSION = 1.9;  % Number of the latest Version
-        VERSIONDATE = '2016/June/15'; % Date of the latest Version
-        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Add backwards compatibility with older macs'; ...
+        AUTHOR = 'Adrian Etter, Marc Biedermann'; % Author of the Class
+        AUTHOREMAIL = 'engineering@econ.uzh.ch'; % Email of the Author
+        COPYRIGHT = {'Department of Economics'; 'University of Zurich'}; % Copyright Info
+        VERSION = 1.10;  % Number of the latest Version
+        VERSIONDATE = '2016/August/12'; % Date of the latest Version
+        CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'Add new Feature heatmap to the class'; ...
+            '2016/June/15', 'Add backwards compatibility with older macs'; ...
             '2016/June/14', 'fix version mess'; ...
             '2016/Jan/11', 'added new function for timeline and normalized timeline and blinktimeline'; ...
             '2013/April/11', 'Complete backward compatibility added'; ...
@@ -204,6 +205,7 @@ classdef Edf2Mat < handle
         verbose         = false;
         output;
         cases           = struct('samples', 'Samples', 'events', 'Events');
+        imhandle;
     end
     
     % PRIVATE WRITABLE VARIABLES
@@ -250,6 +252,7 @@ classdef Edf2Mat < handle
         samplesFilename;    % The file name of ASCII Files which stores all samples
         eventsFilename;     % The file name of ASCII Files which stores all events
         matFilename;        % The file name of MAT File which stores all Header, Samples and Events
+        fails;              % If preparing a folder, it stores all files, who couldn't be converted
         timeline;
         normalizedTimeline;
     end
@@ -260,6 +263,7 @@ classdef Edf2Mat < handle
             assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
             assert(exist('filename', 'var') ...
                   && ischar(filename) ...
+                  || isdir(filename) ...
                   && size(filename, 2) >= 4 ...
                   && strcmp(filename(end - 3:end), '.edf'), ...
                   'EdfConverter:filename', ...
@@ -295,8 +299,49 @@ classdef Edf2Mat < handle
                 end
             end
             
-            obj.processFile();
-        end   
+            if isdir(obj.filename)
+                obj.processFolder();
+            else
+                obj.processFile();
+            end
+        end
+        
+        function processFolder(obj)
+            % working directiory (.edf data folder)
+            workfolder = obj.filename;
+            
+            % variables
+            filenames = dir([workfolder, filesep, '*.edf']);
+            allNames = {filenames.name}';
+            folder = [filenames(1).folder];
+            nrFiles = numel(allNames);
+            
+            isFail = false(nrFiles,1);
+            
+            for currentfile = 1:nrFiles
+                file = [folder, filesep(), allNames{currentfile}];
+                try
+                    edf = Edf2Mat(file);
+                    
+                    edf.plot()
+                    fig = gcf();
+                    fig.PaperOrientation = 'landscape';
+                    print([workfolder, filesep(), allNames{currentfile}(1:end-4)], '-dpdf', '-fillpage');
+                    close(fig);
+                    
+                    isFail(currentfile) = false;
+                    fprintf('Convertion status: %d out of %d done\n', currentfile, nrFiles);
+                catch me
+                    isFail(currentfile) = true;
+                    fprintf('Convertion status: %s convertion failed\n', allNames{currentfile});
+                end
+            end
+            
+            if any(isFail == 1)
+                obj.fails = allNames(isFail);
+            end
+            fprintf('Convertion status: FINISHED\n');
+        end
         
         function processFile(obj)
             importer = @(varargin)edfimporter(varargin{:});
@@ -410,7 +455,7 @@ classdef Edf2Mat < handle
     
     % PRIVATE METHODS
     methods (Access = private)       
-        
+
         function convertFile(obj, kind)
             if obj.oldProcedure
                 if obj.verbose
@@ -533,8 +578,8 @@ classdef Edf2Mat < handle
         % function proccessEvents is in private/processEvents
     end
     
-    % STATIC METHODS
-    methods (Static)       
+    % STATIC METHODS    
+    methods (Static)
         function ver = version()
             % Edf2Mat.version returns the version of the class
             %

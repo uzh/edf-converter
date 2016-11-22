@@ -48,7 +48,8 @@ function plot(obj, startIdx, endIdx)
 % #define BUTTONEVENT  25  /* button state change */
 % #define INPUTEVENT   28  /* change of input port */
 
-    assert(isa(obj, 'Edf2Mat'), 'Edf2Mat:plot', 'Only objects of type Edf2Mat can be plotted!');
+    assert(isa(obj, 'Edf2Mat'), 'Edf2Mat:plot', ...
+        'Only objects of type Edf2Mat can be plotted!');
     
     if ~exist('startIdx', 'var')
         startIdx = 1;
@@ -57,70 +58,60 @@ function plot(obj, startIdx, endIdx)
     if ~exist('endIdx', 'var')
         endIdx = numel(obj.Samples.posX);
     end
+    
     range = startIdx:endIdx;
     
     assert(numel(range) > 0, ...
         'Edf2Mat:plot:range','Start Index == End Index, nothing do be plotted');
-
+    
     screenSize = get(0,'ScreenSize');
     figure( 'Position', [screenSize(3)/4 screenSize(4)/4 2*screenSize(3)/3 2*screenSize(4)/3], ...
         'Name', ['Plotting ' obj.filename], ...
         'NumberTitle', 'off', ...
         'Menubar','none');
+
     
-    
-    posX           = obj.Samples.posX(range);
+    posX = obj.Samples.posX(range);
     % Y must be inverted, because eyetracker origin
     % is upper left corner in a graph its the lower left
-    posY           = obj.Samples.posY(range) * -1;
-    
-    timeRange           = obj.Samples.time(range);
+    posY = obj.Samples.posY(range) * -1;
 
-    [timeline, startPoint] = obj.getTimeline();
-    timeLineRange = timeline >= min(timeRange) & ...
-                                timeline <= max(timeRange);
-    timeline       = timeline(timeLineRange);
-    timeline       = timeline - startPoint;
-
-    pupilSize      = obj.Samples.pupilSize(range);
     
+    % Ploting Eye Movement
     subplot(2,2,[1 3]);
-
     plot(posX, posY, 'o', 'Color','blue'); 
-    title('Plot of the eye movement!');
+    
+    title('Plot of the eye movement');
     axis([min(posX) - 1 max(posX) + 1 min(posY) - 1 max(posY) + 1]);
     axis('square');
-
     xlabel('x-Position');
     ylabel('y-Position');
 
-    % Ploting pupil size    
-    %
+    % Ploting pupil size
     subplot(2,2,2);
-    plot(timeRange, pupilSize); 
+    [tRange, pupil] = obj.getPupilSize(startIdx, endIdx);
+    plot(tRange, pupil); 
+    
     title('Pupil Size');
     axis('auto');
-
     xlabel('time [ms]');
     
+    % Ploting heatmap
     subplot(2,2,4);
-    legendString = {};
-    blinkTimeline =  obj.getBlinkTimeline();
+    [heatmap, ~, axisRange] = obj.heatmap(startIdx, endIdx);
+    obj.imhandle = imagesc(heatmap);
+    % Register the click callbacks:
+    % register mouse down function handle
+    obj.imhandle.Parent.Parent.WindowButtonDownFcn = @(object, eventdata)obj.mouseClicked(true);
+    % register mouse up mouse
+    obj.imhandle.Parent.Parent.WindowButtonUpFcn = @(object, eventdata)obj.mouseClicked(false);
     
-    if ~isempty(blinkTimeline) && numel(blinkTimeline) > 0
-        blinkTimeline = blinkTimeline(timeLineRange);
-        plot(timeline, blinkTimeline, 'r-', 'DisplayName','Blinks');
-        legendString{end+1, 1} = 'Blinks';
-        hold on;
-    end
-    messageTimeline = obj.getMessageTimeline();
-    if ~isempty(messageTimeline) && numel(messageTimeline) > 0
-        messageTimeline = messageTimeline(timeLineRange);
-        plot(timeline, messageTimeline, 'bo', 'DisplayName','Message Occurrence');
-        legendString{end+1, 1} = 'Message Occurrence';        
-    end
-    legend(legendString{:});
-    hold off;
+    set(obj.imhandle.Parent, 'YDir','normal');
+    axis(axisRange);
+    axis square;
+	colorbar;
+    title('HeatMap of the eye movement');
+    xlabel('x-Position (shifted zero)');
+    ylabel('y-Position (shifted zero)');
 
 end
-
