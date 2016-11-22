@@ -140,7 +140,7 @@ The Edf2Mat class has its own plot functionality to plot the content. It’s mor
 
 `plot(edf1);`
 
-![alt text](./plotfunctionarnaud.png "Example of the function plot(edf1)")
+![alt text](./images/plotEdf.png "Example of the function plot(edf1)")
 
 
 
