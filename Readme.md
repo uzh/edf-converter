@@ -8,8 +8,8 @@ Converts EyeLink 1000 Edf files into Matlab
 
 	University of Zurich
 	Department of Economics
-	Winterthurerstrasse 30
-	CH-8006 Zurich
+	Schönberggasse 1
+	CH-8001 Zurich
 
 E-Mail: engineering@econ.uzh.ch
 
