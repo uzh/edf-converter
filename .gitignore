@@ -12,3 +12,5 @@ public/edf-converter
 !public/edf-converter/eyedata.edf
 ~$f_Matlab_Converter.docx
 sandboxing
+edfmex
+EyetrackingOutput
