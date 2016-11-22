@@ -167,7 +167,7 @@ plot(edf1.Samples.pa(2, end - 500:end));
 ```
 plotHeatmap(edf1)
 ```
-![alt text](./plotHeatmapfunctionarnaud.png "Example of the function plotHeatmap(edf1)")
+![alt text](./images/heatmapExample.png "Example of the function plotHeatmap(edf1)")
 
 ## Acknowledgment
 Many thanks to Stefan Schmid and Adrian Etter to point out typos.
