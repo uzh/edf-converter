@@ -24,7 +24,7 @@ plot(edf0.Samples.posX(end - 2000:end), edf0.Samples.posY(end - 2000:end), 'o');
 %% Example 2 for how to use the Edf Converter
 
 %% Converting the EDF File and saving it as a Matlab File
-edf1 = Edf2Mat('fMRI_Results_sub_025_270712EYE25r1.edf');
+edf1 = Edf2Mat('eyedata.edf');
 
 %% The edf Variable now holds all information
 % lets display it:
@@ -46,9 +46,28 @@ plot(edf1.Samples.pa(2, end - 500:end));
 %% Example 2 for how to use the Edf Converter
 
 %% Converting the EDF File and saving it as a Matlab File
-edf2 = Edf2Mat('Pill004.edf');
+edf2 = Edf2Mat('eyedata.edf');
 
 %% Plot the progress of the pupil size
 
 figure();
 plot(edf2.Samples.pa(2, 1:1500));
+
+%% Example 3 how to use the heatmap
+edf3 = Edf2Mat('eyedata.edf');
+
+%% to create a heatmap use:
+
+heatmap = edf3.heatmap();
+
+% and use it as a regular matlab matrix to do your own computations
+image(heatmap);
+
+%% or you can use the built in heatmap plot
+edf3.plotHeatmap();
+% by left click your mouse and move upwards, you can change the
+% upperboundaries of the color range, by moving left-right the lower
+% boundaries
+
+
+
