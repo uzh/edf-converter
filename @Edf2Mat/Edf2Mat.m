@@ -641,6 +641,9 @@ classdef Edf2Mat < handle
             
         end
     end
+    methods (Static, Access = private)
+        gauss = createGauss(size, sigma);
+    end
     
 end
 
