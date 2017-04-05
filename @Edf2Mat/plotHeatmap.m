@@ -27,9 +27,10 @@ function plotHeatmap(obj, startIdx, endIdx, image)
     % create the heatmap figure
     figure;
     hold on;
-    obj.imhandle = imagesc(obj.heatmap(startIdx, endIdx));
+    [heatmap, ~, axisRange] = obj.heatmap(startIdx, endIdx);
+    obj.imhandle = imagesc(heatmap);
     
-    axis image off ij;
+    axis(axisRange);
 	colorbar;
     title('HeatMap of the eye movement');
 

@@ -98,16 +98,20 @@ function plot(obj, startIdx, endIdx)
     
     % Ploting heatmap
     subplot(2,2,4);
-    obj.imhandle = imagesc(heatmap(obj, startIdx, endIdx));
+    [heatmap, ~, axisRange] = obj.heatmap(startIdx, endIdx);
+    obj.imhandle = imagesc(heatmap);
     % Register the click callbacks:
     % register mouse down function handle
     obj.imhandle.Parent.Parent.WindowButtonDownFcn = @(object, eventdata)obj.mouseClicked(true);
     % register mouse up mouse
     obj.imhandle.Parent.Parent.WindowButtonUpFcn = @(object, eventdata)obj.mouseClicked(false);
     
-    set(obj.imhandle.Parent, 'YDir','reverse');
+    set(obj.imhandle.Parent, 'YDir','normal');
+    axis(axisRange);
+    axis square;
 	colorbar;
-% 	alpha color;
     title('HeatMap of the eye movement');
+    xlabel('x-Position (shifted zero)');
+    ylabel('y-Position (shifted zero)');
 
 end
