@@ -105,7 +105,7 @@ classdef Edf2Mat < handle
     %     UINT32 entime; /* end time of the event */
     %     float hstx, hsty; /* headref starting points */
     %     float gstx, gsty; /* gaze starting points */
-    %     float sta;        // Undocumented by sr-research, adrian etters
+    %     float sta;        // Undocumented by sr-research, adrian ettershttps://github.com/MillerLab-UCDavis/edf-converter.git
     %     assumption: start area of pupil
     %     float henx, heny; /* headref ending points */
     %     float genx, geny; /* gaze ending points */
@@ -261,7 +261,6 @@ classdef Edf2Mat < handle
     methods % Here come all the public functions
         function obj = Edf2Mat(filename, useOLDProcedure, verbose)
             %assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
-            assert(ispc || ismac || isunix, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
             assert(exist('filename', 'var') ...
                   && ischar(filename) ...
                   || isdir(filename) ...
@@ -471,13 +470,11 @@ classdef Edf2Mat < handle
                 end
                 [path, ~, ~] = fileparts(which(mfilename));
              
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%
                 if(ispc)
                     command = ['"' path '\private\edf2asc.exe" -miss nan -y '];
-                elseif(isunix)
+                elseif(isunix) %britt added to add a wine call to launch the .exe file
                     command = ['wine', ' ', path, '/private/edf2asc.exe', ' ', '-miss nan -y ']; %britt changed to add wine
                 end
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 switch kind
                     case obj.cases.samples
@@ -487,9 +484,11 @@ classdef Edf2Mat < handle
                     otherwise
                         return;
                 end
+                
+                
                 if (ispc)
                     [~, obj.output] = dos([command obj.filename]);
-                elseif(isunix)
+                elseif(isunix) %add call if Linux is detected to use the system function to launch shell command
                     [~, obj.output] = system([command obj.filename]);
                 end
                 
