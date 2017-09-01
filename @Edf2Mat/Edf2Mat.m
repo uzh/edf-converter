@@ -105,7 +105,7 @@ classdef Edf2Mat < handle
     %     UINT32 entime; /* end time of the event */
     %     float hstx, hsty; /* headref starting points */
     %     float gstx, gsty; /* gaze starting points */
-    %     float sta;        // Undocumented by sr-research, adrian ettershttps://github.com/MillerLab-UCDavis/edf-converter.git
+    %     float sta;        // Undocumented by sr-research, adrian etters
     %     assumption: start area of pupil
     %     float henx, heny; /* headref ending points */
     %     float genx, geny; /* gaze ending points */
