@@ -275,8 +275,8 @@ classdef Edf2Mat < handle
             
             obj.filename = filename;
             
-            %britt added
-            if(isunix)
+            islinux = strfind(computer(), 'GLNX');
+            if islinux
                 useOLDProcedure = true;
             end
             %
@@ -289,9 +289,10 @@ classdef Edf2Mat < handle
                     rethrow(e);
                 end
                 
+                [nowine, ~] = system('wine --version');
                 if obj.oldProcedure
-                    if ~(ispc || isunix)
-                        error('Edf2Mat:computer', 'The old procedure is only available on Windows!');
+                    if isunix && nowine
+                        error('Edf2Mat:computer', 'The old procedure requires wine on non-windows machines.');
                     end
                 end
                 
@@ -470,10 +471,10 @@ classdef Edf2Mat < handle
                 end
                 [path, ~, ~] = fileparts(which(mfilename));
              
-                if(ispc)
+                if ispc
                     command = ['"' path '\private\edf2asc.exe" -miss nan -y '];
-                elseif(isunix) %britt added to add a wine call to launch the .exe file
-                    command = ['wine', ' ', path, '/private/edf2asc.exe', ' ', '-miss nan -y ']; %britt changed to add wine
+                else
+                    command = ['wine', ' ', path, '/private/edf2asc.exe', ' ', '-miss nan -y '];
                 end
                 
                 switch kind
@@ -486,11 +487,7 @@ classdef Edf2Mat < handle
                 end
                 
                 
-                if (ispc)
-                    [~, obj.output] = dos([command obj.filename]);
-                elseif(isunix) %add call if Linux is detected to use the system function to launch shell command
-                    [~, obj.output] = system([command obj.filename]);
-                end
+                [~, obj.output] = system([command obj.filename]);
                 
                 if isempty(strfind(obj.output, 'Converted successfully:'))
                     throw(MException('EdfConverter:Edf2Asc',['Something went wrong, check log:\n' obj.output]));
