@@ -260,7 +260,7 @@ classdef Edf2Mat < handle
     % PUBLIC METHODS
     methods % Here come all the public functions
         function obj = Edf2Mat(filename, useOLDProcedure, verbose)
-            assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
+            %assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
             assert(exist('filename', 'var') ...
                   && ischar(filename) ...
                   || isdir(filename) ...
@@ -275,6 +275,12 @@ classdef Edf2Mat < handle
             
             obj.filename = filename;
             
+            islinux = strfind(computer(), 'GLNX');
+            if islinux
+                useOLDProcedure = true;
+            end
+            %
+            
             if exist('useOLDProcedure', 'var')
                 try
                     obj.oldProcedure = logical(useOLDProcedure);
@@ -283,9 +289,10 @@ classdef Edf2Mat < handle
                     rethrow(e);
                 end
                 
+                [nowine, ~] = system('wine --version');
                 if obj.oldProcedure
-                    if ~(ispc)
-                        error('Edf2Mat:computer', 'The old procedure is only available on Windows!');
+                    if isunix && nowine
+                        error('Edf2Mat:computer', 'The old procedure requires wine on non-windows machines.');
                     end
                 end
                 
@@ -463,7 +470,13 @@ classdef Edf2Mat < handle
                     disp(['Processing ' kind '. Please wait ...']);
                 end
                 [path, ~, ~] = fileparts(which(mfilename));
-                command = ['"' path '\private\edf2asc.exe" -miss nan -y '];
+             
+                if ispc
+                    command = ['"' path '\private\edf2asc.exe" -miss nan -y '];
+                else
+                    command = ['wine', ' ', path, '/private/edf2asc.exe', ' ', '-miss nan -y '];
+                end
+                
                 switch kind
                     case obj.cases.samples
                         command = [command '-s '];
@@ -473,7 +486,8 @@ classdef Edf2Mat < handle
                         return;
                 end
                 
-                [~, obj.output] = dos([command obj.filename]);
+                
+                [~, obj.output] = system([command obj.filename]);
                 
                 if isempty(strfind(obj.output, 'Converted successfully:'))
                     throw(MException('EdfConverter:Edf2Asc',['Something went wrong, check log:\n' obj.output]));
@@ -646,4 +660,3 @@ classdef Edf2Mat < handle
     end
     
 end
-
