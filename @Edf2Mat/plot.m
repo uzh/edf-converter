@@ -56,7 +56,7 @@ function plot(obj, startIdx, endIdx)
     end
     
     if ~exist('endIdx', 'var')
-        endIdx = numel(obj.Samples.posX);
+        endIdx = size(obj.Samples.posX, 1);
     end
     
     range = startIdx:endIdx;
