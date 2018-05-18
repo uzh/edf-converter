@@ -3,6 +3,8 @@
 /*.mat
 /Release/
 /*.zip
+analysis-files/*
+edf_examples/*
 edfmex/edf2mex.h
 edfmex/10.edf
 edfmex/edfimporter.mexw64
