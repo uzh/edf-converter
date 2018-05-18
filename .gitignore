@@ -8,6 +8,7 @@ edfmex/*.mex*
 Edf2Mat
 Edf2Mat.piz
 ~$f_Matlab_Converter.docx
-sandboxing
+sandboxing/*
+future_improvments/*
 .DS_Store
 EyetrackingOutput
