@@ -8,12 +8,14 @@ Converts EyeLink 1000 Edf files into Matlab
 
   University of Zurich
   Department of Economics
-  Winterthurerstrasse 30
-  CH-8006 Zurich
+  Schönberggasse 1
+  CH-8001 Zurich
 
 E-Mail: engineering@econ.uzh.ch
 
-URL:	[http://www.econ.uzh.ch/faculty/etter.html](http://www.econ.uzh.ch/faculty/etter.html)
+URL:
+  - [https://www.econ.uzh.ch/en/people/staff/etter.html](https://www.econ.uzh.ch/en/people/staff/etter.html)
+  - [https://www.econ.uzh.ch/en/people/staff/biedermann.html](https://www.econ.uzh.ch/en/people/staff/biedermann.html)
 
 2016 August 15.
 
@@ -93,7 +95,7 @@ edfapi.framework/
 ## How to use Edf2Mat – Toolbox
 
 
-There is an `edf2mat_example` script. Have a look at it.
+There is an `Example.m` script. Have a look at it.
 Type `help` for help
 
   help Edf2Mat
@@ -113,13 +115,13 @@ Type `help` for help
 
 
    Inputs:
-      filename:           must be of type *.edf     
+      filename:           must be of type *.edf
       useOldProcedure:    If you want to use the old procedure with
-                        edf2asc.exe, you can set this argument to
-                        true, default is false
+                          edf2asc.exe, you can set this argument to
+                          true, default is false
       verbose:            logical, can be true or false, default is true.
-                        If you want to supress output to console,
-                        verbose has to be false
+                          If you want to suppress output to console,
+                          verbose has to be false
 
 
   The Basic functionality is as follows:
@@ -140,7 +142,7 @@ The Edf2Mat class has its own plot functionality to plot the content. It’s mor
 
 `plot(edf1);`
 
-![alt text](./plotfunctionarnaud.png "Example of the function plot(edf1)")
+![alt text](./images/plotEdf.png "Example of the function plot(edf1)")
 
 
 
@@ -167,7 +169,7 @@ plot(edf1.Samples.pa(2, end - 500:end));
 ```
 plotHeatmap(edf1)
 ```
-![alt text](./plotHeatmapfunctionarnaud.png "Example of the function plotHeatmap(edf1)")
+![alt text](./images/heatmapExample.png "Example of the function plotHeatmap(edf1)")
 
 ## Acknowledgment
 Many thanks to Stefan Schmid and Adrian Etter to point out typos.
