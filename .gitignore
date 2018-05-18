@@ -13,3 +13,5 @@ public/edf-converter
 ~$f_Matlab_Converter.docx
 sandboxing
 .DS_Store
+edfmex
+EyetrackingOutput
