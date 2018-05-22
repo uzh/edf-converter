@@ -1,4 +1,4 @@
-function [heatMap, gaze, plotRange] = heatmap(obj, startIdx, endIdx)
+function [heatMap, gaze, plotRange] = heatmap(obj, startIdx, endIdx, eye)
 %% heatMap
 % generating heatMap data
 %
@@ -29,7 +29,11 @@ if ~exist('startIdx', 'var')
 end
 
 if ~exist('endIdx', 'var')
-    endIdx = numel(obj.Samples.posX);
+    endIdx = size(obj.Samples.posX, 1);
+end
+
+if ~exist('eye', 'var')
+    eye = 1;
 end
 
 range = startIdx:endIdx;
@@ -40,16 +44,17 @@ assert(numel(range) > 0, 'Edf2Mat:plot:range', ...
 gaussSize = 80;
 gaussSigma = 20;
 
-posX = obj.Samples.posX(range);
-posY = obj.Samples.posY(range);
+posX = obj.Samples.posX(range, eye);
+posY = obj.Samples.posY(range, eye);
 
 %% generating data for heatmap
 gazedata = [posY, posX];
 gazedata = gazedata(~isnan(gazedata(:, 1)), :);
 
 % set minimum x and y to zero
-gazedata(:,1) = gazedata(:,1) - min(gazedata(:,1));
-gazedata(:,2) = gazedata(:,2) - min(gazedata(:,2));
+for i=1:size(gazedata, 2)
+    gazedata(:, i) = gazedata(:, i) - min(gazedata(:, i));
+end
 
 gazedata = ceil(gazedata) + 1;
 data = accumarray(gazedata, 1);
