@@ -1,7 +1,7 @@
 # Edf2Mat© Matlab Toolbox
 Converts EyeLink 1000 Edf files into Matlab
 
-  Version 1.9
+  Version 1.20
 
   Adrian Etter
   Marc Biedermann
@@ -17,7 +17,7 @@ URL:
   - [https://www.econ.uzh.ch/en/people/staff/etter.html](https://www.econ.uzh.ch/en/people/staff/etter.html)
   - [https://www.econ.uzh.ch/en/people/staff/biedermann.html](https://www.econ.uzh.ch/en/people/staff/biedermann.html)
 
-2016 August 15.
+2018 May 22.
 
 ### Abstract
 
