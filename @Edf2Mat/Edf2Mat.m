@@ -269,8 +269,10 @@ classdef Edf2Mat < handle
                   && strcmp(filename(end - 3:end), '.edf'), ...
                   'EdfConverter:filename', ...
                   'Bad Filename, Filename must be given and be of type .edf!');
+
+            assert(length(filename) < 112, 'EdfConverter:filenameToLong', sprintf('Bad Filename, the filename has to have less than 112 characters (current length: %d)', length(filename)))
               
-              assert(logical(exist(filename, 'file')),...
+            assert(logical(exist(filename, 'file')),...
               'EdfConverter:filenotfound', ...
               ['File ' filename ' not found!']);
             
@@ -356,9 +358,8 @@ classdef Edf2Mat < handle
             if ~obj.oldProcedure  
                 if ismac
                     [~, version] = unix('sw_vers -productVersion');
-                    version = strsplit(version, '.');
-                    version = str2double(version{2});
-                    if (version < 11) 
+                    version = regexp(version, '(?<major>\d+)\.(?<minor>\d+).(?<patch>\d+)', 'names');
+                    if (str2double(version.major) < 11) 
                        importer = @(varargin)edfimporter_pre11(varargin{:});
                     end                
                 end
