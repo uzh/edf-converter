@@ -12,3 +12,5 @@ sandboxing/*
 future_improvments/*
 .DS_Store
 EyetrackingOutput
+edfmex/source/edf2mex.h
+*.asv
