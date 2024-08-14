@@ -3,8 +3,6 @@
 Converts EyeLink 1000 Edf files into Matlab
 
 ```txt
-  Version 1.20
-
   Adrian Etter
   Marc Biedermann
 
@@ -14,33 +12,31 @@ Converts EyeLink 1000 Edf files into Matlab
   CH-8001 Zurich
 ```
 
-E-Mail: <engineering@econ.uzh.ch>
+E-Mail: <it@econ.uzh.ch>
 
-URL:
-
-- [https://www.econ.uzh.ch/en/people/staff/etter.html](https://www.econ.uzh.ch/en/people/staff/etter.html)
-- [https://www.econ.uzh.ch/en/people/staff/biedermann.html](https://www.econ.uzh.ch/en/people/staff/biedermann.html)
 
 ## Abstract
 
 Edf2Mat is a Matlab Toolbox for easy conversion of EyeLink Edf result files. For fast verification of valid data, there is an included plot function, which displays eye movement,  pupil size and a heatmap of the eye movement. There are a few examples in the example file which help analyze eye data.
 
-## Copyright
+## Terms and Conditions
 
-Copyright © 2007-2016 Adrian Etter, Marc Biedermann, University of Zurich. All rights reserved.
+### Copyright
+
+Copyright © 2007-2024 Adrian Etter, Marc Biedermann, University of Zurich. All rights reserved.
 
 This document may be copied, modified, reproduced and redistributed for educational and personal use as long as the original author is mentioned and cited.
 
 MATLAB® is a registered Trademark of MathWorks, Inc.™ (<http://www.mathworks.com>).
 EyeLink® is a registered trademark of SR Research Ltd., Mississauga, Ontario, Canada (<http://www.sr-research.com>)
 
-## Acknowledgment
+### Acknowledgment
 
 You are allowed to use this software for free, but please acknowledge if you are using this software to process Edf-files:
 
 The conversion of the EyeLink® 1000 Edf files was done with the Edf2Mat Matlab Toolbox designed and developed by Adrian Etter and Marc Biedermann at the University of Zurich.
 
-## License
+### License
 
 Edf2Mat Toolbox is Licensed under the MIT License.
 The Edf2Mat Toolbox uses slightly modified code (Kovach, 2011) from C. Kovach 2007.
@@ -76,6 +72,11 @@ edfapi.framework/
 │   └── Current -> A
 └── edfapi -> Versions/Current/edfapi
 ```
+
+NOTE:
+
+- Intel chips: use `edfapi.Framework-3.1.zip` (later version isn't tested yet)
+- Apple Silicon chips: use `edfapi.Framework-4.2.762.0.zip`
 
 ### Files needed
 
@@ -170,3 +171,14 @@ plotHeatmap(edf1);
 ## Bibliography
 
 Kovach, C. (2011, 01 12). SR Research. Retrieved from SR Research Support: [https://www.sr-support.com/showthread.php?255-Import-of-EDF-file-into-Matlab&p=6781#post6781](https://www.sr-support.com/showthread.php?255-Import-of-EDF-file-into-Matlab&p=6781#post6781)
+
+## Development
+
+### Create Mex files
+
+Run the following command to create the mex file for the current system architecture.
+
+```matlab
+% for debug add "true" as argument
+edfmex.build()
+```
