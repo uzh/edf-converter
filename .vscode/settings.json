@@ -1,0 +1,7 @@
+{
+    "C_Cpp.default.includePath": [
+        "/Applications/MATLAB_R2023b.app/extern/include/",
+        "/Library/Frameworks/edfapi.framework/Headers/",
+        "./header"
+    ]
+}
