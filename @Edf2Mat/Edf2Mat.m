@@ -563,13 +563,15 @@ classdef Edf2Mat < handle
                     obj.Samples.(names{i}) = samples;
                 end
                 
-                recNr = nan(size(obj.Samples.time, 1), 1);
+                startRec = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.START);
                 endRecordings = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.END);
+                recNr = ones(size(obj.Samples.time, 1), 1) .* double(startRec(1).eye);
+                
                 if isempty(endRecordings)
                     warning('Edf2Mat:processSamples:noend', 'Recording was not ended properly! Assuming recorded eye stayed the same for this trial!');
-                    startRec = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.START);
-                    eye_used = zeros(size(obj.Samples.time, 1), 1) + double(startRec(1).eye);
+                    eye_used = recNr;
                 else
+                    endRecordings = table2struct(sortrows(struct2table(endRecordings), 'time', 'descend'));
                     for i = 1 : numel(endRecordings)
                         recNr(obj.Samples.time < endRecordings(i).time) = i;
                     end
