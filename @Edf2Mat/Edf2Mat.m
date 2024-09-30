@@ -264,7 +264,7 @@ classdef Edf2Mat < handle
             %assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
             assert(exist('filename', 'var') ...
                   && ischar(filename) ...
-                  || isdir(filename) ...
+                  || isfolder(filename) ...
                   && size(filename, 2) >= 4 ...
                   && strcmp(filename(end - 3:end), '.edf'), ...
                   'EdfConverter:filename', ...
@@ -309,7 +309,7 @@ classdef Edf2Mat < handle
                 end
             end
             
-            if isdir(obj.filename)
+            if isfolder(obj.filename)
                 obj.processFolder();
             else
                 obj.processFile();
@@ -343,7 +343,7 @@ classdef Edf2Mat < handle
                     fprintf('Convertion status: %d out of %d done\n', currentfile, nrFiles);
                 catch me
                     isFail(currentfile) = true;
-                    fprintf('Convertion status: %s convertion failed\n', allNames{currentfile});
+                    fprintf('Convertion status: %s convertion failed (%s)\n', allNames{currentfile}, me.message);
                 end
             end
             
@@ -513,7 +513,7 @@ classdef Edf2Mat < handle
             else % create old header elements for backward compatibility
                 header = obj.Header.raw;
             end
-            header  = textscan(header, '%s', 'delimiter', sprintf('\n'));
+            header  = textscan(header, '%s', 'delimiter', newline);
             header{1} = strrep(header{1}, '**', '');
             header{1} = strrep(header{1}, '|', '');
             header{1} = strrep(header{1}, '=', '');
