@@ -202,6 +202,7 @@ classdef Edf2Mat < handle
         % the class itself AND aren't visible from the outside
 
         % Description of the variable can also be above the variable.
+        forceLatestImporter = false;
         oldProcedure = false;
         verbose = false;
         output;
@@ -260,7 +261,7 @@ classdef Edf2Mat < handle
 
     % PUBLIC METHODS
     methods % Here come all the public functions
-        function obj = Edf2Mat(filename, useOLDProcedure, verbose)
+        function obj = Edf2Mat(filename, useOLDProcedure, verbose, forceLatestImporter)
             %assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
             assert(exist('filename', 'var') ...
                 && ischar(filename) ...
@@ -282,15 +283,19 @@ classdef Edf2Mat < handle
             if islinux
                 useOLDProcedure = true;
             end
-            %
 
-            if exist('useOLDProcedure', 'var')
+            function value = checkLogical(variable, messageID, argumentPosition)
                 try
-                    obj.oldProcedure = logical(useOLDProcedure);
+                    value = logical(variable);
                 catch e
-                    e = e.addCause(MException('Edf2Mat:oldProcedure', 'Bad Argument: 2nd argument has to be of type logical!'));
+                    e = e.addCause(MException(messageID, ...
+                        sprintf('Bad Argument: %dth argument has to be of type logical!', argumentPosition)));
                     rethrow(e);
                 end
+            end
+
+            if exist('useOLDProcedure', 'var')
+                obj.oldProcedure = checkLogical(useOLDProcedure, 'Edf2Mat:oldProcedure', 2);
 
                 [nowine, ~] = system('wine --version');
                 if obj.oldProcedure
@@ -300,11 +305,10 @@ classdef Edf2Mat < handle
                 end
 
                 if exist('verbose', 'var')
-                    try
-                        obj.verbose = logical(verbose);
-                    catch e
-                        e = e.addCause(MException('Edf2Mat:verbose', 'Bad Argument: 3rd argument has to be of type logical!'));
-                        rethrow(e);
+                    obj.verbose = checkLogical(verbose, 'Edf2Mat:verbose', 3);
+
+                    if exist('forceLatestImporter', 'var')
+                        obj.forceLatestImporter = checkLogical(forceLatestImporter, 'Edf2Mat:forceLatestImporter', 4);
                     end
                 end
             end
@@ -359,7 +363,8 @@ classdef Edf2Mat < handle
                 if ismac
                     [~, version] = unix('sw_vers -productVersion');
                     version = regexp(version, '(?<major>\d+)\.(?<minor>\d+)?.?(?<patch>\d+)', 'names');
-                    if (str2double(version.major) < 11)
+                    if (str2double(version.major) < 11 && ~obj.forceLatestImporter)
+                        fprintf('DEPRECATION WARNING: Using older importer for macOS version %s\n', strtrim(version.major));
                         importer = @(varargin)edfimporter_pre11(varargin{:});
                     end
                 end
