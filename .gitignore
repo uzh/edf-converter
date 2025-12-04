@@ -1,16 +1,27 @@
-/*.edf
-/*.asc
-/*.mat
-/*.zip
-analysis-files/*
-edf_examples/*
-edfmex/*.mex*
-Edf2Mat
-Edf2Mat.piz
-~$f_Matlab_Converter.docx
-sandboxing/*
-future_improvments/*
-.DS_Store
-EyetrackingOutput
-edfmex/source/edf2mex.h
+# Build artifacts
 *.asv
+
+# OS files
+.DS_Store
+
+# Data files
+*.asc
+*.edf
+*.mat
+*.zip
+
+# Directories
+analysis-files/*
+Edf2Mat
+edf_examples/*
+EyetrackingOutput
+future_improvments/*
+sandboxing/*
+
+# Project specific
+Edf2Mat.piz
+edfmex/*.mex*
+edfmex/source/edf2mex.h
+
+# Temporary files
+~$f_Matlab_Converter.docx
