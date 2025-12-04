@@ -11,13 +11,13 @@ classdef Edf2Mat < handle
     %         Edf2Mat(filename, verbose);
     %
     % Inputs:
-    %   filename:           must be of type *.edf     
+    %   filename:           must be of type *.edf
     %   useOldProcedure:    If you want to use the old procedure with
     %                       edf2asc.exe, you can set this argument to
     %                       true, default is false
     %   verbose:            logical, can be true or false, default is true.
-    %                       If you want to suppress output to console, 
-    %                       verbose has to be false    
+    %                       If you want to suppress output to console,
+    %                       verbose has to be false
     %
     % Outputs:
     %	The Edf2Mat Object
@@ -53,15 +53,15 @@ classdef Edf2Mat < handle
     %
     %
     % See also: Edf2Mat.plot(), Edf2Mat.save(), Edf2Mat.heatmap()
-    %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header          
+    %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
     %           Edf2Mat.about(), Edf2Mat.version()
     %
     % <a href="matlab:Edf2Mat.about()">Copyright & Info</a>
-    
+
     % License:
     %     Copyright (c) 2013, Adrian Etter
     %     All rights reserved.
-    % 
+    %
     %     Redistribution and use in source and binary forms, with or
     %     without modification, are permitted provided that the following
     %     conditions are met:
@@ -75,7 +75,7 @@ classdef Edf2Mat < handle
     %     names of its contributors may be used to endorse or promote
     %     products derived from this software without specific prior
     %     written permission.
-    % 
+    %
     %     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
     %     CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
     %     INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -89,12 +89,12 @@ classdef Edf2Mat < handle
     %     LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
     %     ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     %     POSSIBILITY OF SUCH DAMAGE.
-    
+
     % Event structure from SR-Research:
     %     float  px[2], py[2];    /* pupil xy */
     % 	  float  hx[2], hy[2];    /* headref xy */
     % 	  float  pa[2]; 		 /* pupil size or area */
-    % 
+    %
     % 	  float gx[2], gy[2];    /* screen gaze xy */
     %     float rx, ry;          /* screen pixels per degree */
     %     UINT32 time; /* effective time of event */
@@ -126,164 +126,164 @@ classdef Edf2Mat < handle
     %     UINT16 buttons;
     %     UINT16 parsedby; /* 7 bits of flags: PARSEDBY codes*/
     %     LSTRING *message; /* any message string
-    
+
     % CONSTANT AND HIDDEN VARIABLES
     properties (Constant, Hidden)
         HEADERSTART = 316;
     end
-    
+
     % CONSTANT VARIABLES
-    properties (Constant)            
+    properties (Constant)
         % Here we add the Version, Author, Copyright Info and the Change
         % Log
         AUTHOR = 'Adrian Etter, Marc Biedermann'; % Author of the Class
         AUTHOREMAIL = 'engineering@econ.uzh.ch'; % Email of the Author
         COPYRIGHT = {'Department of Economics'; 'University of Zurich'}; % Copyright Info
-        VERSION = 1.20;  % Number of the latest Version
+        VERSION = 1.20; % Number of the latest Version
         VERSIONDATE = '2018/May/22'; % Date of the latest Version
         CHANGELOG = {eval([mfilename '.VERSIONDATE']), 'fix heatmap for binocular data';
-            '2016/August/12', 'Add new Feature heatmap to the class'; ...
-            '2016/June/15', 'Add backwards compatibility with older macs'; ...
-            '2016/June/14', 'fix version mess'; ...
-            '2016/Jan/11', 'added new function for timeline and normalized timeline and blinktimeline'; ...
-            '2013/April/11', 'Complete backward compatibility added'; ...
-            '2013/May/07', 'Bug fixes and renaming of variable. Old names persist! All event types defined'; ...
-            '2013/April/11', 'Changed to mex instead of using edf.asc.exe'; ...
-            '2012/Aug/10', 'Finished'; ...
-            '2012/Aug/9', 'created'};
-        
-        EVENT_TYPES = struct('STARTPARSE', 1, ... 	% /* these only have time and eye data */
-        'ENDPARSE', 2, ...
-        'BREAKPARSE', 10, ...
-        ...
-        ... % 			/* EYE DATA: contents determined by evt_data */
-        'STARTBLINK', 3, ...    % /* and by "read" data item */
-        'ENDBLINK', 4, ...    % /* all use IEVENT format */
-        'STARTSACC', 5, ...
-        'ENDSACC', 6, ...
-        'STARTFIX', 7, ...
-        'ENDFIX', 8, ...
-        'FIXUPDATE', 9, ...
-        ... %
-        ... %   /* buffer = (none, directly affects state), btype = CONTROL_BUFFER */
-        ... %
-        ... % 			 /* control events: all put data into */
-        ... % 			 /* the EDF_FILE or ILINKDATA status  */
-        'STARTSAMPLES', 15, ...  % /* start of events in block */
-        'ENDSAMPLES', 16, ...  % /* end of samples in block */
-        'STARTEVENTS', 17, ...  % /* start of events in block */
-        'ENDEVENTS', 18, ...  % /* end of events in block */
-        ... %
-        ... %
-        ... %
-        ... %  	/* buffer = IMESSAGE, btype = IMESSAGE_BUFFER */
-        ... %
-        'MESSAGEEVENT', 24, ...  % /* user-definable text or data */
-        ... %
-        ... %
-        ... % 	/* buffer = IOEVENT, btype = IOEVENT_BUFFER */
-        ... %
-        'BUTTONEVENT', 25, ...  % /* button state change */
-        'INPUTEVENT', 28, ...  % /* change of input port */
-        ... 
-        'LOST_DATA_EVENT', hex2dec('3F'));   %/* NEW: Event flags gap in data stream */
-    
-        RECORDING_STATES    = struct('START', 1, 'END', 0);
-        EYES                = struct('LEFT', 1, 'RIGHT', 2, 'BINOCULAR', 3);
-        PUPIL               = struct('AREA', 0, 'DIAMETER', 1); 
-        MISSING_DATA_VALUE  = -32768;
-        EMPTY_VALUE         = 1e08; % only for backward compatibility with old Edf2Mat ...
-        
-    end  
-    
+                     '2016/August/12', 'Add new Feature heatmap to the class'; ...
+                         '2016/June/15', 'Add backwards compatibility with older macs'; ...
+                         '2016/June/14', 'fix version mess'; ...
+                         '2016/Jan/11', 'added new function for timeline and normalized timeline and blinktimeline'; ...
+                         '2013/April/11', 'Complete backward compatibility added'; ...
+                         '2013/May/07', 'Bug fixes and renaming of variable. Old names persist! All event types defined'; ...
+                         '2013/April/11', 'Changed to mex instead of using edf.asc.exe'; ...
+                         '2012/Aug/10', 'Finished'; ...
+                         '2012/Aug/9', 'created'};
+
+        EVENT_TYPES = struct('STARTPARSE', 1, ... % /* these only have time and eye data */
+            'ENDPARSE', 2, ...
+            'BREAKPARSE', 10, ...
+            ...
+            ... % 			/* EYE DATA: contents determined by evt_data */
+            'STARTBLINK', 3, ... % /* and by "read" data item */
+            'ENDBLINK', 4, ... % /* all use IEVENT format */
+            'STARTSACC', 5, ...
+            'ENDSACC', 6, ...
+            'STARTFIX', 7, ...
+            'ENDFIX', 8, ...
+            'FIXUPDATE', 9, ...
+            ... %
+            ... %   /* buffer = (none, directly affects state), btype = CONTROL_BUFFER */
+            ... %
+            ... % 			 /* control events: all put data into */
+            ... % 			 /* the EDF_FILE or ILINKDATA status  */
+            'STARTSAMPLES', 15, ... % /* start of events in block */
+            'ENDSAMPLES', 16, ... % /* end of samples in block */
+            'STARTEVENTS', 17, ... % /* start of events in block */
+            'ENDEVENTS', 18, ... % /* end of events in block */
+            ... %
+            ... %
+            ... %
+            ... %  	/* buffer = IMESSAGE, btype = IMESSAGE_BUFFER */
+            ... %
+            'MESSAGEEVENT', 24, ... % /* user-definable text or data */
+            ... %
+            ... %
+            ... % 	/* buffer = IOEVENT, btype = IOEVENT_BUFFER */
+            ... %
+            'BUTTONEVENT', 25, ... % /* button state change */
+            'INPUTEVENT', 28, ... % /* change of input port */
+            ...
+            'LOST_DATA_EVENT', hex2dec('3F')); %/* NEW: Event flags gap in data stream */
+
+        RECORDING_STATES = struct('START', 1, 'END', 0);
+        EYES = struct('LEFT', 1, 'RIGHT', 2, 'BINOCULAR', 3);
+        PUPIL = struct('AREA', 0, 'DIAMETER', 1);
+        MISSING_DATA_VALUE = -32768;
+        EMPTY_VALUE = 1e08; % only for backward compatibility with old Edf2Mat ...
+
+    end
+
     % PRIVATE VARIABLES
-    properties(SetAccess = private, GetAccess = private)
+    properties (SetAccess = private, GetAccess = private)
         % Here come the properties, which only can be read and written from
         % the class itself AND aren't visible from the outside
-        
+
         % Description of the variable can also be above the variable.
-        oldProcedure    = false;
-        verbose         = false;
+        oldProcedure = false;
+        verbose = false;
         output;
-        cases           = struct('samples', 'Samples', 'events', 'Events');
+        cases = struct('samples', 'Samples', 'events', 'Events');
         imhandle;
     end
-    
+
     % PRIVATE WRITABLE VARIABLES
-    properties(SetAccess = private, GetAccess = public)
-        
+    properties (SetAccess = private, GetAccess = public)
+
         filename; % The name of the EDF File converted
-        
+
         % The Header of the Eyetrackerdata, Information about the Eyetrackerdata
         Header = struct('date', [], ...
-                'type', [], ...
-                'version', [], ...
-                'source', [], ...
-                'system', [], ...
-                'camera', [], ...
-                'serial_number', [], ...
-                'camera_config', [] ...
-                );
-            
+            'type', [], ...
+            'version', [], ...
+            'source', [], ...
+            'system', [], ...
+            'camera', [], ...
+            'serial_number', [], ...
+            'camera_config', [] ...
+        );
+
         % The Samples of the Eyetrackerdata
         Samples = struct('time', [], 'posX', [], 'posY', [], 'pupilSize', []);
-        
+
         % The Events of the Eyetrackerdata
         Events = struct('Messages', [], ...
-                        'Start', [], ...
-                        'Input', [], ...
-                        'Buttons', [], ...
-                        'prescaler', [], ...
-                        'vprescaler', [], ...
-                        'pupilInfo', [], ...
-                        'Sfix', [], ...
-                        'Efix', [], ...
-                        'Ssacc', [], ...
-                        'Esacc', [], ...
-                        'Sblink', [], ...
-                        'Eblink', [], ...
-                        'End', [] ...
-                        );
-         % The converted Edf structure generated by the edfmex mex routine
-         RawEdf = struct();
-                    
+            'Start', [], ...
+            'Input', [], ...
+            'Buttons', [], ...
+            'prescaler', [], ...
+            'vprescaler', [], ...
+            'pupilInfo', [], ...
+            'Sfix', [], ...
+            'Efix', [], ...
+            'Ssacc', [], ...
+            'Esacc', [], ...
+            'Sblink', [], ...
+            'Eblink', [], ...
+            'End', [] ...
+        );
+        % The converted Edf structure generated by the edfmex mex routine
+        RawEdf = struct();
+
     end
-    
-    properties (Dependent)        
-        samplesFilename;    % The file name of ASCII Files which stores all samples
-        eventsFilename;     % The file name of ASCII Files which stores all events
-        matFilename;        % The file name of MAT File which stores all Header, Samples and Events
-        fails;              % If preparing a folder, it stores all files, who couldn't be converted
+
+    properties (Dependent)
+        samplesFilename; % The file name of ASCII Files which stores all samples
+        eventsFilename; % The file name of ASCII Files which stores all events
+        matFilename; % The file name of MAT File which stores all Header, Samples and Events
+        fails; % If preparing a folder, it stores all files, who couldn't be converted
         timeline;
         normalizedTimeline;
     end
-    
+
     % PUBLIC METHODS
     methods % Here come all the public functions
         function obj = Edf2Mat(filename, useOLDProcedure, verbose)
             %assert(ispc || ismac, 'Edf2Mat:computer', 'This class is only available on windows or mac!');
             assert(exist('filename', 'var') ...
-                  && ischar(filename) ...
-                  || isfolder(filename) ...
-                  && size(filename, 2) >= 4 ...
-                  && strcmp(filename(end - 3:end), '.edf'), ...
-                  'EdfConverter:filename', ...
-                  'Bad Filename, Filename must be given and be of type .edf!');
+                && ischar(filename) ...
+                || isfolder(filename) ...
+                && size(filename, 2) >= 4 ...
+                && strcmp(filename(end - 3:end), '.edf'), ...
+                'EdfConverter:filename', ...
+            'Bad Filename, Filename must be given and be of type .edf!');
 
             assert(length(filename) < 112, 'EdfConverter:filenameToLong', sprintf('Bad Filename, the filename has to have less than 112 characters (current length: %d)', length(filename)))
-              
-            assert(logical(exist(filename, 'file')),...
-              'EdfConverter:filenotfound', ...
-              ['File ' filename ' not found!']);
-            
+
+            assert(logical(exist(filename, 'file')), ...
+                'EdfConverter:filenotfound', ...
+                ['File ' filename ' not found!']);
+
             obj.filename = filename;
-            
+
             islinux = strfind(computer(), 'GLNX');
             if islinux
                 useOLDProcedure = true;
             end
             %
-            
+
             if exist('useOLDProcedure', 'var')
                 try
                     obj.oldProcedure = logical(useOLDProcedure);
@@ -291,14 +291,14 @@ classdef Edf2Mat < handle
                     e = e.addCause(MException('Edf2Mat:oldProcedure', 'Bad Argument: 2nd argument has to be of type logical!'));
                     rethrow(e);
                 end
-                
+
                 [nowine, ~] = system('wine --version');
                 if obj.oldProcedure
                     if isunix && nowine
                         error('Edf2Mat:computer', 'The old procedure requires wine on non-windows machines.');
                     end
                 end
-                
+
                 if exist('verbose', 'var')
                     try
                         obj.verbose = logical(verbose);
@@ -308,37 +308,37 @@ classdef Edf2Mat < handle
                     end
                 end
             end
-            
+
             if isfolder(obj.filename)
                 obj.processFolder();
             else
                 obj.processFile();
             end
         end
-        
+
         function processFolder(obj)
             % working directiory (.edf data folder)
             workfolder = obj.filename;
-            
+
             % variables
             filenames = dir([workfolder, filesep, '*.edf']);
             allNames = {filenames.name}';
             folder = [filenames(1).folder];
             nrFiles = numel(allNames);
-            
-            isFail = false(nrFiles,1);
-            
+
+            isFail = false(nrFiles, 1);
+
             for currentfile = 1:nrFiles
                 file = [folder, filesep(), allNames{currentfile}];
                 try
                     edf = Edf2Mat(file);
-                    
+
                     edf.plot()
                     fig = gcf();
                     fig.PaperOrientation = 'landscape';
-                    print([workfolder, filesep(), allNames{currentfile}(1:end-4)], '-dpdf', '-fillpage');
+                    print([workfolder, filesep(), allNames{currentfile}(1:end - 4)], '-dpdf', '-fillpage');
                     close(fig);
-                    
+
                     isFail(currentfile) = false;
                     fprintf('Convertion status: %d out of %d done\n', currentfile, nrFiles);
                 catch me
@@ -346,28 +346,28 @@ classdef Edf2Mat < handle
                     fprintf('Convertion status: %s convertion failed (%s)\n', allNames{currentfile}, me.message);
                 end
             end
-            
+
             if any(isFail == 1)
                 obj.fails = allNames(isFail);
             end
             fprintf('Convertion status: FINISHED\n');
         end
-        
+
         function processFile(obj)
             importer = @(varargin)edfimporter(varargin{:});
-            if ~obj.oldProcedure  
+            if ~obj.oldProcedure
                 if ismac
                     [~, version] = unix('sw_vers -productVersion');
                     version = regexp(version, '(?<major>\d+)\.(?<minor>\d+)?.?(?<patch>\d+)', 'names');
-                    if (str2double(version.major) < 11) 
-                       importer = @(varargin)edfimporter_pre11(varargin{:});
-                    end                
+                    if (str2double(version.major) < 11)
+                        importer = @(varargin)edfimporter_pre11(varargin{:});
+                    end
                 end
-                obj.RawEdf      = importer(obj.filename);
-                obj.Header.raw  = obj.RawEdf.HEADER;
-                obj.Samples     = obj.RawEdf.FSAMPLE;
+                obj.RawEdf = importer(obj.filename);
+                obj.Header.raw = obj.RawEdf.HEADER;
+                obj.Samples = obj.RawEdf.FSAMPLE;
             end
-            
+
             obj.convertSamples();
             obj.createHeader();
             obj.convertEvents();
@@ -376,7 +376,7 @@ classdef Edf2Mat < handle
             end
 
         end
-        
+
         function samplesFilename = get.samplesFilename(obj)
             if obj.oldProcedure
                 samplesFilename = strrep(obj.filename, '.edf', ['_' lower(obj.cases.samples) '.asc']);
@@ -384,7 +384,7 @@ classdef Edf2Mat < handle
                 samplesFilename = 'not available for new procedure!';
             end
         end
-        
+
         function eventsFilename = get.eventsFilename(obj)
             if obj.oldProcedure
                 eventsFilename = strrep(obj.filename, '.edf', ['_' lower(obj.cases.events) '.asc']);
@@ -392,275 +392,273 @@ classdef Edf2Mat < handle
                 eventsFilename = 'not available for new procedure!';
             end
         end
-        
+
         function matFilename = get.matFilename(obj)
             matFilename = strrep(obj.filename, '.edf', '.mat');
-        end    
-        
+        end
+
         function timeline = get.timeline(obj)
             timeline = obj.getTimeline();
         end
-        
+
         function timeline = get.normalizedTimeline(obj)
             timeline = obj.getNormalizedTimeline();
         end
-        
+
         function convertSamples(obj)
             if obj.oldProcedure
                 obj.convertFile(obj.cases.samples);
             end
             obj.processSamples();
         end
-        
+
         function convertEvents(obj)
             if obj.oldProcedure
                 obj.convertFile(obj.cases.events);
             end
             obj.processEvents();
         end
-        
+
         function save(obj)
             % some how we need to make new copies to store them in a
             % file ...
-            header  = obj.Header;
+            header = obj.Header;
             samples = obj.Samples;
-            events  = obj.Events;
-            edf     = obj.RawEdf;
-            thisobj = obj;
-            vname   = @(x) inputname(1);
-            builtin('save', obj.matFilename, vname(header), vname(samples), vname(events), vname(edf), vname(thisobj));
-        end    
-        
-        function [timeline, offset] = getTimeline(obj)
-            timeline       = (obj.Events.Start.time:obj.Events.End.time).';
-            offset = timeline(1);
-        end
-        
-        function [timeline, offset] = getNormalizedTimeline(obj)
-            [timeline, offset] = obj.getTimeline();
-            timeline       = timeline - offset;
-        end
-        
-        function blinkTimeline = getBlinkTimeline(obj)
-            startIndecies = arrayfun(@(x)find(obj.Samples.time == x),  ...
-                    obj.Events.Eblink.start).';
-            endIndecies = arrayfun(@(x)find(obj.Samples.time == x),  ...
-                    obj.Events.Eblink.end).';
-            
-            blinks  = mat2cell([startIndecies, endIndecies], ones(numel(startIndecies), 1));
-            blinkTimeline = zeros(numel(obj.timeline), 1);
-            blinkTimeline(cell2mat(cellfun(@(x)colon(x(1), x(2)).', ...
-                blinks, 'UniformOutput', false))) = 1;
-        end
-        
-        function messageTimeline = getMessageTimeline(obj)
-            messageTimes        = unique(obj.Events.Messages.time);
-            extendedTimeline    = unique([obj.timeline(:); messageTimes(:)]).';
-            messageTimeline     = nan(numel(extendedTimeline), 1);
-            messageTimeline(ismember(extendedTimeline, messageTimes))    = 1;
-        end
-       
-    end
-    
-    % PRIVATE METHODS
-    methods (Access = private)       
+            events = obj.Events;
+                edf = obj.RawEdf;
+                thisobj = obj;
+                vname = @(x) inputname(1);
+                builtin('save', obj.matFilename, vname(header), vname(samples), vname(events), vname(edf), vname(thisobj));
+            end
 
-        function convertFile(obj, kind)
-            if obj.oldProcedure
-                if obj.verbose
-                    disp('Trying to convert!')
-                    disp(['Processing ' kind '. Please wait ...']);
+            function [timeline, offset] = getTimeline(obj)
+                timeline = (obj.Events.Start.time:obj.Events.End.time).';
+                offset = timeline(1);
+            end
+
+            function [timeline, offset] = getNormalizedTimeline(obj)
+                [timeline, offset] = obj.getTimeline();
+                timeline = timeline - offset;
+            end
+
+            function blinkTimeline = getBlinkTimeline(obj)
+                startIndecies = arrayfun(@(x)find(obj.Samples.time == x), ...
+                    obj.Events.Eblink.start).';
+                endIndecies = arrayfun(@(x)find(obj.Samples.time == x), ...
+                    obj.Events.Eblink.end).';
+
+                blinks = mat2cell([startIndecies, endIndecies], ones(numel(startIndecies), 1));
+                blinkTimeline = zeros(numel(obj.timeline), 1);
+                blinkTimeline(cell2mat(cellfun(@(x)colon(x(1), x(2)).', ...
+                    blinks, 'UniformOutput', false))) = 1;
+            end
+
+            function messageTimeline = getMessageTimeline(obj)
+                messageTimes = unique(obj.Events.Messages.time);
+                extendedTimeline = unique([obj.timeline(:); messageTimes(:)]).';
+                messageTimeline = nan(numel(extendedTimeline), 1);
+                messageTimeline(ismember(extendedTimeline, messageTimes)) = 1;
+            end
+
+        end
+
+        % PRIVATE METHODS
+        methods (Access = private)
+
+            function convertFile(obj, kind)
+                if obj.oldProcedure
+                    if obj.verbose
+                        disp('Trying to convert!')
+                        disp(['Processing ' kind '. Please wait ...']);
+                    end
+                    [path, ~, ~] = fileparts(which(mfilename));
+
+                    if ispc
+                        command = ['"' path '\private\edf2asc.exe" -miss nan -y '];
+                    else
+                        command = ['wine', ' ', path, '/private/edf2asc.exe', ' ', '-miss nan -y '];
+                    end
+
+                    switch kind
+                        case obj.cases.samples
+                            command = [command '-s '];
+                        case obj.cases.events
+                            command = [command '-e -t '];
+                        otherwise
+                            return;
+                    end
+
+                    [~, obj.output] = system([command obj.filename]);
+
+                    if isempty(strfind(obj.output, 'Converted successfully:'))
+                        throw(MException('EdfConverter:Edf2Asc', ['Something went wrong, check log:\n' obj.output]));
+                    end
+
+                    if obj.verbose
+                        disp([kind ' successfully converted!']);
+                    end
+
+                    obj.movefile(kind);
                 end
-                [path, ~, ~] = fileparts(which(mfilename));
-             
-                if ispc
-                    command = ['"' path '\private\edf2asc.exe" -miss nan -y '];
-                else
-                    command = ['wine', ' ', path, '/private/edf2asc.exe', ' ', '-miss nan -y '];
+            end
+
+            function createHeader(obj)
+                names = fieldnames(obj.Header);
+                names = names(1:end - 1); % we skip the raw entry
+                if obj.oldProcedure
+                    lineNrs = strfind(obj.output, 'Processed');
+                    header = obj.output(1:lineNrs(1) - 1);
+                    header = header(obj.HEADERSTART:end);
+                else % create old header elements for backward compatibility
+                    header = obj.Header.raw;
                 end
-                
+                header = textscan(header, '%s', 'delimiter', newline);
+                header{1} = strrep(header{1}, '**', '');
+                header{1} = strrep(header{1}, '|', '');
+                header{1} = strrep(header{1}, '=', '');
+                for i = 1:size(names, 1)
+                    line = i;
+                    if line > size(header{1}, 1), break; end
+                    obj.Header.(names{i}) = strtrim(strrep(header{1}{line}, [upper(names{i}) ': '], ''));
+                end
+                obj.Header.raw = header{:};
+
+                % sometimes we don't have all fields, especially when tracker
+                % records in dummy mode
+                if ~isempty(obj.Header.serial_number)
+                    obj.Header.serial_number = strrep(obj.Header.serial_number, 'SERIAL NUMBER: ', '');
+                end
+
+            end
+
+            function movefile(obj, kind)
+                asciiname = strrep(obj.filename, '.edf', '.asc');
                 switch kind
                     case obj.cases.samples
-                        command = [command '-s '];
+                        newfilename = obj.samplesFilename;
                     case obj.cases.events
-                        command = [command '-e -t '];
+                        newfilename = obj.eventsFilename;
                     otherwise
                         return;
                 end
-                
-                
-                [~, obj.output] = system([command obj.filename]);
-                
-                if isempty(strfind(obj.output, 'Converted successfully:'))
-                    throw(MException('EdfConverter:Edf2Asc',['Something went wrong, check log:\n' obj.output]));
-                end
-                
-                if obj.verbose
-                    disp([kind ' successfully converted!']);
-                end
-                
-                obj.movefile(kind);
+                movefile(asciiname, newfilename, 'f');
             end
-        end
-        
-        function createHeader(obj)
-            names = fieldnames(obj.Header);
-            names = names(1:end - 1);  % we skip the raw entry
-            if obj.oldProcedure
-                lineNrs = strfind(obj.output, 'Processed');
-                header  = obj.output(1 : lineNrs(1) - 1);
-                header = header(obj.HEADERSTART:end);
-            else % create old header elements for backward compatibility
-                header = obj.Header.raw;
-            end
-            header  = textscan(header, '%s', 'delimiter', newline);
-            header{1} = strrep(header{1}, '**', '');
-            header{1} = strrep(header{1}, '|', '');
-            header{1} = strrep(header{1}, '=', '');
-            for i = 1 : size(names, 1)
-                line = i;
-                if line > size(header{1}, 1), break; end
-                obj.Header.(names{i}) = strtrim(strrep(header{1}{line}, [upper(names{i}) ': '], ''));
-            end
-            obj.Header.raw = header{:};
 
-            % sometimes we don't have all fields, especially when tracker
-            % records in dummy mode
-            if ~isempty(obj.Header.serial_number)
-                obj.Header.serial_number = strrep(obj.Header.serial_number, 'SERIAL NUMBER: ', '');
-            end
-            
-        end
-        
-        function movefile(obj, kind)
-            asciiname = strrep(obj.filename, '.edf', '.asc');
-            switch kind
-                case obj.cases.samples
-                    newfilename = obj.samplesFilename;                   
-                case obj.cases.events
-                    newfilename = obj.eventsFilename;
-                otherwise
-                    return;
-            end
-            movefile(asciiname, newfilename, 'f');
-        end
-        
-        function processSamples(obj)
-            if obj.oldProcedure
-                fID = fopen(obj.samplesFilename, 'r');
-                % Read ASCII-Samples File
-                samples = textscan(fID, '%f %f %f %f %*s', 'delimiter', '\t', ...
-                    'EmptyValue', nan);
-                obj.Samples =  cell2struct(samples', fieldnames(obj.Samples));
-                % Close ASCII-Samples File
-                fclose(fID);
-            else % create old header elements for backward compatibility
-                names = fieldnames(obj.Samples);
-                % make values double for easier computation
-                for i = 1 : size(names, 1)
-                    samples = double(obj.Samples.(names{i})).';
-                    samples(samples == obj.EMPTY_VALUE) = nan;
-                    obj.Samples.(names{i}) = samples;
-                end
-                
-                startRec = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.START);
-                endRecordings = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.END);
-                recNr = ones(size(obj.Samples.time, 1), 1) .* double(startRec(1).eye);
-                
-                if isempty(endRecordings)
-                    warning('Edf2Mat:processSamples:noend', 'Recording was not ended properly! Assuming recorded eye stayed the same for this trial!');
-                    eye_used = recNr;
-                else
-                    endRecordings = table2struct(sortrows(struct2table(endRecordings), 'time', 'descend'));
-                    for i = 1 : numel(endRecordings)
-                        recNr(obj.Samples.time < endRecordings(i).time) = i;
+            function processSamples(obj)
+                if obj.oldProcedure
+                    fID = fopen(obj.samplesFilename, 'r');
+                    % Read ASCII-Samples File
+                    samples = textscan(fID, '%f %f %f %f %*s', 'delimiter', '\t', ...
+                        'EmptyValue', nan);
+                    obj.Samples = cell2struct(samples', fieldnames(obj.Samples));
+                    % Close ASCII-Samples File
+                    fclose(fID);
+                else % create old header elements for backward compatibility
+                    names = fieldnames(obj.Samples);
+                    % make values double for easier computation
+                    for i = 1:size(names, 1)
+                        samples = double(obj.Samples.(names{i})).';
+                        samples(samples == obj.EMPTY_VALUE) = nan;
+                        obj.Samples.(names{i}) = samples;
                     end
-                    eye_used = double([obj.RawEdf.RECORDINGS(recNr).eye]).';
+
+                    startRec = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.START);
+                    endRecordings = obj.RawEdf.RECORDINGS([obj.RawEdf.RECORDINGS.state].' == obj.RECORDING_STATES.END);
+                    recNr = ones(size(obj.Samples.time, 1), 1) .* double(startRec(1).eye);
+
+                    if isempty(endRecordings)
+                        warning('Edf2Mat:processSamples:noend', 'Recording was not ended properly! Assuming recorded eye stayed the same for this trial!');
+                        eye_used = recNr;
+                    else
+                        endRecordings = table2struct(sortrows(struct2table(endRecordings), 'time', 'descend'));
+                        for i = 1:numel(endRecordings)
+                            recNr(obj.Samples.time < endRecordings(i).time) = i;
+                        end
+                        eye_used = double([obj.RawEdf.RECORDINGS(recNr).eye]).';
+                    end
+
+                    if any(eye_used == obj.EYES.BINOCULAR)
+                        obj.Samples.posX = obj.Samples.gx;
+                        obj.Samples.posY = obj.Samples.gy;
+                        obj.Samples.pupilSize = obj.Samples.pa;
+                    else
+                        % add old fields
+                        obj.Samples.posX = obj.Samples.gx(sub2ind(size(obj.Samples.gx), 1:numel(eye_used), eye_used(:)')).'; % select column depending on the eye used!
+                        obj.Samples.posY = obj.Samples.gy(sub2ind(size(obj.Samples.gy), 1:numel(eye_used), eye_used(:)')).';
+                        obj.Samples.pupilSize = obj.Samples.pa(sub2ind(size(obj.Samples.pa), 1:numel(eye_used), eye_used(:)')).';
+                    end
+
                 end
-                
-                
-                if any(eye_used == obj.EYES.BINOCULAR)
-                    obj.Samples.posX        = obj.Samples.gx;
-                    obj.Samples.posY        = obj.Samples.gy;
-                    obj.Samples.pupilSize   = obj.Samples.pa;
-                else
-                    % add old fields
-                    obj.Samples.posX        = obj.Samples.gx(sub2ind(size(obj.Samples.gx), 1:numel(eye_used), eye_used(:)')).'; % select column depending on the eye used!
-                    obj.Samples.posY        = obj.Samples.gy(sub2ind(size(obj.Samples.gy), 1:numel(eye_used), eye_used(:)')).';
-                    obj.Samples.pupilSize   = obj.Samples.pa(sub2ind(size(obj.Samples.pa), 1:numel(eye_used), eye_used(:)')).';
+            end
+
+            % function proccessEvents is in private/processEvents
+        end
+
+        % STATIC METHODS
+        methods (Static)
+            function ver = version()
+                % Edf2Mat.version returns the version of the class
+                %
+                % Syntax: Edf2Mat.version()
+                %
+                % Inputs:
+                %   No Inputs
+                %
+                % Outputs:
+                %	version
+                %
+                % Example: Edf2Mat.version();
+                %
+                % See also: Edf2Mat.plot(), Edf2Mat.save()
+                %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
+                %           Edf2Mat.about(), Edf2Mat.version()
+
+                ver = eval([class(eval(mfilename)) '.VERSION']);
+
+            end
+            function about()
+                % Edf2Mat.about prints everything about the class
+                %
+                % Syntax: Edf2Mat.about()
+                %
+                % Inputs:
+                %   No Inputs
+                %
+                % Outputs:
+                %	No Outputs
+                %
+                % Example: Edf2Mat.about();
+                %
+                % See also: Edf2Mat.plot(), Edf2Mat.save()
+                %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
+                %           Edf2Mat.about(), Edf2Mat.version()
+
+                className = mfilename;
+                fprintf('\n\n\t About the <a href="matlab:help %s">%s</a>:\n\n', className, className);
+                fprintf('\t\tAuthor: \t%s\n', eval([className '.AUTHOR']));
+                fprintf('\t\tE-Mail: \t<a href="mailto:%s">%s</a>\n', eval([className '.AUTHOREMAIL']), eval([className '.AUTHOREMAIL']));
+
+                fprintf('\t\tCopyright:');
+                fprintf('\t%s\n', eval([className '.COPYRIGHT{1}']));
+                for i = 2:size(eval([className '.COPYRIGHT']), 1)
+                    fprintf('\t\t\t\t\t%s\n', eval([className '.COPYRIGHT{i}']));
                 end
-                
+                fprintf('\n');
+                fprintf('\t\tVersion: \t%1.1f - %s\n', eval([className '.VERSION']), eval([className '.VERSIONDATE']));
+                fprintf('\n');
+                fprintf('\t\tLast revision: \t%s\n', eval([className '.CHANGELOG{1, 1}']));
+                fprintf('\t\t\t\t\t\t-%s\n', eval([className '.CHANGELOG{1, 2}']));
+
+                for i = 2:size(eval([className '.CHANGELOG']), 1)
+                    fprintf('\t\t\t\t\t\t%s\n', eval([className '.CHANGELOG{i, 1}']));
+                    fprintf('\t\t\t\t\t\t-%s\n', eval([className '.CHANGELOG{i, 2}']));
+                end
+                fprintf('\n\n');
+
             end
         end
-        
-        % function proccessEvents is in private/processEvents
-    end
-    
-    % STATIC METHODS    
-    methods (Static)
-        function ver = version()
-            % Edf2Mat.version returns the version of the class
-            %
-            % Syntax: Edf2Mat.version()
-            %
-            % Inputs:
-            %   No Inputs
-            %
-            % Outputs:
-            %	version
-            %
-            % Example: Edf2Mat.version();
-            %
-            % See also: Edf2Mat.plot(), Edf2Mat.save()
-            %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
-            %           Edf2Mat.about(), Edf2Mat.version()
-            
-            ver = eval([class(eval(mfilename)) '.VERSION']);
-            
+        methods (Static, Access = private)
+            gauss = createGauss(size, sigma);
         end
-        function about()
-            % Edf2Mat.about prints everything about the class
-            %
-            % Syntax: Edf2Mat.about()
-            %
-            % Inputs:
-            %   No Inputs
-            %
-            % Outputs:
-            %	No Outputs
-            %
-            % Example: Edf2Mat.about();
-            %
-            % See also: Edf2Mat.plot(), Edf2Mat.save()
-            %           Edf2Mat.Events, Edf2Mat.Samples, Edf2Mat.Header
-            %           Edf2Mat.about(), Edf2Mat.version()
-            
-            className = mfilename;
-            fprintf('\n\n\t About the <a href="matlab:help %s">%s</a>:\n\n', className, className);
-            fprintf('\t\tAuthor: \t%s\n', eval([className '.AUTHOR']));
-            fprintf('\t\tE-Mail: \t<a href="mailto:%s">%s</a>\n', eval([className '.AUTHOREMAIL']), eval([className '.AUTHOREMAIL']));
-            
-            fprintf('\t\tCopyright:');
-            fprintf('\t%s\n', eval([className '.COPYRIGHT{1}']));
-            for i = 2 : size(eval([className '.COPYRIGHT']), 1)
-                fprintf('\t\t\t\t\t%s\n', eval([className '.COPYRIGHT{i}']));
-            end
-            fprintf('\n');
-            fprintf('\t\tVersion: \t%1.1f - %s\n', eval([className '.VERSION']), eval([className '.VERSIONDATE']));
-            fprintf('\n');
-            fprintf('\t\tLast revision: \t%s\n', eval([className '.CHANGELOG{1, 1}']));
-            fprintf('\t\t\t\t\t\t-%s\n', eval([className '.CHANGELOG{1, 2}']));
-            
-            for i = 2 : size(eval([className '.CHANGELOG']), 1)
-                fprintf('\t\t\t\t\t\t%s\n', eval([className '.CHANGELOG{i, 1}']));
-                fprintf('\t\t\t\t\t\t-%s\n', eval([className '.CHANGELOG{i, 2}']));
-            end
-            fprintf('\n\n');
-            
-        end
+
     end
-    methods (Static, Access = private)
-        gauss = createGauss(size, sigma);
-    end
-    
-end
